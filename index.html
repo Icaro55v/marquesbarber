@@ -1,17 +1,900 @@
-{
-  "rules": {
-    "barbearia": {
-      "users": {
-        ".read": "root.child('barbearia/users/' + auth.uid + '/role').val() === 'admin'",
-        "$uid": {
-          ".read": "auth.uid === $uid",
-          ".write": "auth.uid === $uid"
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marques Barber - Contabilidade & Gestão</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        corp: {
+                            primary: '#3f3f46', // zinc-700 (Cinza Escuro Profissional)
+                            primaryHover: '#27272a', // zinc-800 (Quase Preto)
+                            bgDark: '#09090b', // zinc-950 (Fundo Preto)
+                            bgLight: '#f4f4f5', // zinc-100 (Cinza Claro)
+                            cardDark: '#18181b', // zinc-900 (Cartão Preto Fosco)
+                            cardLight: '#ffffff', // Branco
+                            borderDark: '#27272a', // zinc-800
+                            borderLight: '#e4e4e7', // zinc-200
+                        }
+                    }
+                }
+            }
         }
-      },
-      "appointments": {
-        ".read": "auth != null",
-        ".write": "auth != null"
-      }
-    }
-  }
-}
+    </script>
+
+    <style>
+        /* Custom Scrollbar - Professional Look */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        .dark ::-webkit-scrollbar-track { background: #09090b; }
+        .dark ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+        
+        ::-webkit-scrollbar-track { background: #f4f4f5; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; margin: 0; 
+        }
+        
+        body { transition: background-color 0.3s, color 0.3s; }
+        .theme-transition { transition: all 0.3s ease; }
+        
+        /* Table Styles */
+        th { letter-spacing: 0.05em; text-transform: uppercase; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col bg-corp-bgLight text-slate-900 dark:bg-corp-bgDark dark:text-slate-100 theme-transition overflow-x-hidden">
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-corp-bgDark theme-transition">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 dark:opacity-10 pointer-events-none"></div>
+        
+        <div class="w-full max-w-md p-8 bg-white dark:bg-corp-cardDark rounded-2xl shadow-2xl border border-corp-borderLight dark:border-corp-borderDark relative z-10 mx-4">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-corp-primary dark:text-white mb-4 shadow-sm">
+                    <i class="fa-solid fa-chart-pie text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-wider">Marques<span class="text-corp-primary dark:text-zinc-400">Contábil</span></h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Gestão Financeira e Assinantes</p>
+            </div>
+
+            <form id="login-form" onsubmit="realizarLogin(event)">
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Usuário</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-regular fa-user text-slate-400"></i>
+                        </div>
+                        <input type="text" id="login-user" required placeholder="Digite seu usuário" 
+                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Senha</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-lock text-slate-400"></i>
+                        </div>
+                        <input type="password" id="login-pass" required placeholder="••••••••" 
+                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
+                    </div>
+                    <p id="login-error" class="text-red-500 text-xs mt-2 hidden font-medium"><i class="fa-solid fa-circle-exclamation mr-1"></i> Usuário ou senha incorretos.</p>
+                </div>
+                <button type="submit" class="w-full bg-corp-primary hover:bg-corp-primaryHover text-white font-bold py-3.5 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
+                    <i class="fa-solid fa-right-to-bracket mr-2"></i> Acessar Sistema
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center border-t border-slate-200 dark:border-slate-700 pt-5">
+                <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800/50">
+                    <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-3"><i class="fa-solid fa-key mr-1.5"></i> Credenciais de Primeiro Acesso</h3>
+                    <div class="flex justify-center space-x-3 text-sm">
+                        <div class="bg-white dark:bg-black px-3 py-1.5 rounded border border-zinc-200 dark:border-zinc-800">
+                            <span class="text-zinc-500">Usuário:</span> <b class="text-corp-primary dark:text-white ml-1">admin</b>
+                        </div>
+                        <div class="bg-white dark:bg-black px-3 py-1.5 rounded border border-zinc-200 dark:border-zinc-800">
+                            <span class="text-zinc-500">Senha:</span> <b class="text-corp-primary dark:text-white ml-1">admin</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SISTEMA PRINCIPAL (Oculto até o login) -->
+    <div id="app-screen" class="hidden flex-col min-h-screen">
+        
+        <!-- Navbar ERP -->
+        <nav class="bg-white dark:bg-corp-cardDark border-b border-corp-borderLight dark:border-corp-borderDark sticky top-0 z-40 shadow-sm theme-transition">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex items-center justify-center w-8 h-8 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 mr-3">
+                            <i class="fa-solid fa-chart-pie text-corp-primary dark:text-white text-sm"></i>
+                        </div>
+                        <span class="font-bold text-lg tracking-wide text-slate-900 dark:text-white uppercase">Marques<span class="text-corp-primary dark:text-zinc-400">Contábil</span></span>
+                    </div>
+                    <div class="flex items-center space-x-1 sm:space-x-4">
+                        <button onclick="mudarAba('financeiro')" id="btn-financeiro" class="aba-btn active flex items-center px-3 py-5 text-sm font-medium transition-all text-corp-primary border-b-2 border-corp-primary">
+                            <i class="fa-solid fa-calculator sm:mr-2"></i><span class="hidden sm:inline">Fluxo de Caixa</span>
+                        </button>
+                        <button onclick="mudarAba('assinantes')" id="btn-assinantes" class="aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent">
+                            <i class="fa-solid fa-users sm:mr-2"></i><span class="hidden sm:inline">Assinantes</span>
+                        </button>
+                        <button onclick="mudarAba('planos')" id="btn-planos" class="aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent">
+                            <i class="fa-solid fa-box-archive sm:mr-2"></i><span class="hidden sm:inline">Planos</span>
+                        </button>
+                        
+                        <div class="pl-4 border-l border-slate-200 dark:border-slate-700 flex items-center space-x-2">
+                            <button onclick="toggleTheme()" class="w-9 h-9 rounded-md flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors" title="Mudar Tema">
+                                <i id="theme-icon" class="fa-solid fa-sun"></i>
+                            </button>
+                            <button onclick="sair()" class="w-9 h-9 rounded-md flex items-center justify-center text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10 transition-colors" title="Sair">
+                                <i class="fa-solid fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+            <!-- ============================================== -->
+            <!-- ABA: FLUXO DE CAIXA -->
+            <!-- ============================================== -->
+            <div id="aba-financeiro" class="block animate-fade-in">
+                
+                <!-- Cards ERP (Resumo) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white dark:bg-corp-cardDark rounded-lg border border-corp-borderLight dark:border-corp-borderDark p-5 shadow-sm theme-transition">
+                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Receitas (Mês)</p>
+                        <h3 class="text-2xl font-bold text-emerald-600 dark:text-emerald-400" id="valor-entradas">R$ 0,00</h3>
+                    </div>
+                    <div class="bg-white dark:bg-corp-cardDark rounded-lg border border-corp-borderLight dark:border-corp-borderDark p-5 shadow-sm theme-transition">
+                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Despesas (Mês)</p>
+                        <h3 class="text-2xl font-bold text-rose-600 dark:text-rose-400" id="valor-saidas">R$ 0,00</h3>
+                    </div>
+                    <div class="bg-white dark:bg-corp-cardDark rounded-lg border border-corp-borderLight dark:border-corp-borderDark p-5 shadow-sm theme-transition border-l-4 border-l-corp-primary dark:border-l-corp-primary">
+                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Lucro (Mês)</p>
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white" id="valor-saldo">R$ 0,00</h3>
+                    </div>
+                    <div class="bg-white dark:bg-corp-cardDark rounded-lg border border-corp-borderLight dark:border-corp-borderDark p-5 shadow-sm theme-transition">
+                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Assinantes Ativos</p>
+                        <h3 class="text-2xl font-bold text-zinc-600 dark:text-zinc-300" id="valor-ativos">0</h3>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Form Lançamento -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-6 shadow-sm theme-transition">
+                            <h2 class="text-base font-bold text-slate-900 dark:text-white mb-5 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center">
+                                <i class="fa-solid fa-plus-minus text-corp-primary mr-2"></i> Novo Lançamento
+                            </h2>
+                            
+                            <form id="form-transacao" onsubmit="salvarTransacao(event)">
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="tipo_transacao" value="receita" checked class="peer sr-only">
+                                        <div class="text-center py-2 px-3 rounded border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-500/10 peer-checked:text-emerald-600 dark:peer-checked:text-emerald-400 peer-checked:border-emerald-500 transition-all text-sm font-medium">
+                                            Receita (+)
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="tipo_transacao" value="despesa" class="peer sr-only">
+                                        <div class="text-center py-2 px-3 rounded border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 peer-checked:bg-rose-50 dark:peer-checked:bg-rose-500/10 peer-checked:text-rose-600 dark:peer-checked:text-rose-400 peer-checked:border-rose-500 transition-all text-sm font-medium">
+                                            Despesa (-)
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Descrição</label>
+                                    <input type="text" id="desc-transacao" required placeholder="Ex: Mensalidade, Produtos, Luz..." 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Valor (R$)</label>
+                                    <input type="number" id="valor-transacao" required min="0.01" step="0.01" placeholder="0.00" 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                </div>
+
+                                <div class="mb-6">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Data Referência</label>
+                                    <input type="date" id="data-transacao" required 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all [color-scheme:light] dark:[color-scheme:dark]">
+                                </div>
+
+                                <button type="submit" class="w-full bg-corp-primary hover:bg-corp-primaryHover text-white font-medium py-2.5 rounded transition-all text-sm shadow-sm flex justify-center items-center">
+                                    <i class="fa-solid fa-check mr-2"></i> Registrar Lançamento
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Histórico -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full flex flex-col theme-transition overflow-hidden">
+                            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                                <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center">
+                                    <i class="fa-solid fa-table-list text-corp-primary mr-2"></i> Livro Razão (Lançamentos)
+                                </h2>
+                                <button onclick="confirmarLimparHistorico()" class="text-xs font-medium text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 transition-colors flex items-center bg-rose-50 dark:bg-rose-500/10 px-2.5 py-1.5 rounded">
+                                    <i class="fa-solid fa-trash-can mr-1.5"></i> Limpar Histórico
+                                </button>
+                            </div>
+                            
+                            <div class="flex-1 overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                                            <th class="py-3 px-4 font-semibold w-24">Data</th>
+                                            <th class="py-3 px-4 font-semibold">Descrição</th>
+                                            <th class="py-3 px-4 font-semibold w-24">Tipo</th>
+                                            <th class="py-3 px-4 font-semibold text-right w-32">Valor</th>
+                                            <th class="py-3 px-4 font-semibold text-center w-16">Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabela-transacoes" class="text-sm divide-y divide-slate-100 dark:divide-slate-800/50">
+                                        <!-- Preenchido via JS -->
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Empty State -->
+                                <div id="empty-state-transacoes" class="hidden flex-col items-center justify-center py-16 text-center">
+                                    <i class="fa-solid fa-file-invoice-dollar text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Nenhum lançamento contábil encontrado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- ABA: ASSINANTES -->
+            <!-- ============================================== -->
+            <div id="aba-assinantes" class="hidden animate-fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    
+                    <!-- Cadastro -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-6 shadow-sm theme-transition sticky top-24">
+                            <h2 class="text-base font-bold text-slate-900 dark:text-white mb-5 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center">
+                                <i class="fa-solid fa-user-plus text-corp-primary mr-2"></i> Novo Assinante
+                            </h2>
+                            
+                            <form id="form-assinante" onsubmit="salvarAssinante(event)">
+                                <div class="mb-4">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Nome Completo</label>
+                                    <input type="text" id="nome-assinante" required placeholder="Nome do cliente" 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Contato / WhatsApp</label>
+                                    <input type="text" id="tel-assinante" placeholder="(00) 00000-0000" 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Plano Vinculado</label>
+                                    <select id="plano-assinante" required class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all cursor-pointer">
+                                        <!-- Preenchido via JS -->
+                                    </select>
+                                </div>
+
+                                <div class="mb-6">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Dia do Vencimento</label>
+                                    <input type="number" id="vencimento-assinante" required min="1" max="31" placeholder="Ex: 10" 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                </div>
+
+                                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-medium py-2.5 rounded transition-all text-sm shadow-sm">
+                                    Cadastrar Cliente
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Tabela Assinantes -->
+                    <div class="lg:col-span-3">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full flex flex-col theme-transition overflow-hidden">
+                            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                                <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center">
+                                    <i class="fa-solid fa-address-book text-corp-primary mr-2"></i> Gestão da Carteira
+                                </h2>
+                                <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold px-2.5 py-1 rounded border border-slate-200 dark:border-slate-700">
+                                    Total: <span id="total-assinantes-badge" class="text-corp-primary">0</span>
+                                </span>
+                            </div>
+                            
+                            <div class="flex-1 overflow-x-auto">
+                                <table class="w-full text-left border-collapse min-w-[700px]">
+                                    <thead>
+                                        <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                                            <th class="py-3 px-4 font-semibold">Cliente</th>
+                                            <th class="py-3 px-4 font-semibold">Plano</th>
+                                            <th class="py-3 px-4 font-semibold">Uso (Ciclo)</th>
+                                            <th class="py-3 px-4 font-semibold">Vencimento</th>
+                                            <th class="py-3 px-4 font-semibold">Status</th>
+                                            <th class="py-3 px-4 font-semibold text-center">Operações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabela-assinantes" class="text-sm divide-y divide-slate-100 dark:divide-slate-800/50">
+                                        <!-- Preenchido via JS -->
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Empty State -->
+                                <div id="empty-state-assinantes" class="hidden flex-col items-center justify-center py-16 text-center">
+                                    <i class="fa-solid fa-users-slash text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Nenhum cliente na carteira.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- ABA: PLANOS -->
+            <!-- ============================================== -->
+            <div id="aba-planos" class="hidden animate-fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <div class="lg:col-span-1">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-6 shadow-sm theme-transition">
+                            <h2 class="text-base font-bold text-slate-900 dark:text-white mb-5 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center">
+                                <i class="fa-solid fa-box text-corp-primary mr-2"></i> Configurar Plano
+                            </h2>
+                            
+                            <form id="form-plano" onsubmit="salvarPlano(event)">
+                                <div class="mb-4">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Nome do Pacote</label>
+                                    <input type="text" id="nome-plano" required placeholder="Ex: Premium" 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Mensalidade (R$)</label>
+                                    <input type="number" id="valor-plano" required min="1" step="0.01" placeholder="0.00" 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                </div>
+
+                                <div class="mb-6 border border-slate-200 dark:border-slate-700 rounded p-3 bg-slate-50 dark:bg-slate-950/50">
+                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-2">Franquia de Cortes / Mês</label>
+                                    <div class="flex items-center space-x-3">
+                                        <input type="number" id="limite-plano" min="1" placeholder="Ex: 4" 
+                                            class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-3 py-2 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary outline-none text-sm disabled:opacity-50">
+                                        <label class="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap cursor-pointer">
+                                            <input type="checkbox" id="ilimitado-plano" onchange="toggleIlimitado()" class="rounded text-corp-primary focus:ring-corp-primary bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-600 w-4 h-4">
+                                            <span>Ilimitado</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-medium py-2.5 rounded transition-all text-sm shadow-sm">
+                                    Adicionar Plano
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full flex flex-col p-6 theme-transition">
+                            <h2 class="text-base font-bold text-slate-900 dark:text-white mb-5 flex items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+                                <i class="fa-solid fa-boxes-stacked text-corp-primary mr-2"></i> Portfólio de Planos
+                            </h2>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="lista-planos">
+                                <!-- Preenchido via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal Customizado (Avisos/Confirmações) -->
+    <div id="custom-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-corp-cardDark border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform" id="modal-content">
+            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-4 mx-auto border border-slate-200 dark:border-slate-700" id="modal-icon-container">
+                <i id="modal-icon" class="fa-solid fa-triangle-exclamation text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white text-center mb-2" id="modal-title">Atenção</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-center mb-6 text-sm" id="modal-message">Tem certeza?</p>
+            
+            <div class="flex space-x-3">
+                <button id="modal-btn-cancel" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded text-sm font-medium transition-colors border border-slate-200 dark:border-slate-700">
+                    Cancelar
+                </button>
+                <button id="modal-btn-confirm" class="flex-1 bg-corp-primary hover:bg-corp-primaryHover text-white px-4 py-2.5 rounded text-sm font-medium transition-colors shadow-sm">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- ESTADO (In-Memory para a sessão atual) ---
+        // Seguindo as instruções: "Default to In-Memory State... do NOT use Firestore by default" e "NEVER use localStorage".
+        let isLoggedIn = false;
+        
+        let transacoes = [];
+        let assinantes = [];
+        let planos = [
+            { id: '1', nome: 'Mensal Básico', valor: 50.00, limiteCortes: 2, ilimitado: false },
+            { id: '2', nome: 'VIP Ilimitado', valor: 90.00, limiteCortes: 0, ilimitado: true }
+        ];
+
+        // --- SISTEMA DE LOGIN ---
+        function realizarLogin(event) {
+            event.preventDefault();
+            const user = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+            const errorEl = document.getElementById('login-error');
+
+            // Credenciais fixas de demonstração para a UI gate
+            if (user === 'admin' && pass === 'admin') {
+                isLoggedIn = true;
+                errorEl.classList.add('hidden');
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+                document.getElementById('app-screen').classList.add('flex');
+                
+                // Inicializa dados na UI
+                iniciarApp();
+            } else {
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        function sair() {
+            mostrarModal("Encerrar Sessão", "Atenção: Como não há banco em nuvem ativo nesta versão base, os dados não salvos podem ser perdidos. Deseja sair?", "fa-power-off text-rose-500", "Sair", "bg-rose-600 hover:bg-rose-700", () => {
+                window.location.reload();
+            });
+        }
+
+        // --- INICIALIZAÇÃO ---
+        function iniciarApp() {
+            // Aplicar tema salvo ou preferência
+            const html = document.documentElement;
+            if (!html.classList.contains('dark')) {
+                document.getElementById('theme-icon').classList.replace('fa-sun', 'fa-moon');
+            }
+
+            // Correção: Garante que a data preenchida obedeça o fuso horário local corretamente (evita bug de meia-noite)
+            const now = new Date();
+            const ano = now.getFullYear();
+            const mes = String(now.getMonth() + 1).padStart(2, '0');
+            const dia = String(now.getDate()).padStart(2, '0');
+            document.getElementById('data-transacao').value = `${ano}-${mes}-${dia}`;
+            
+            renderizarPlanos();
+            atualizarSelectPlanos();
+            renderizarTransacoes();
+            renderizarAssinantes();
+            calcularTotais();
+        }
+
+        // --- THEME TOGGLE ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                html.classList.add('dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            }
+        }
+
+        // --- NAVEGAÇÃO DE ABAS ---
+        function mudarAba(abaId) {
+            ['financeiro', 'assinantes', 'planos'].forEach(id => {
+                document.getElementById(`aba-${id}`).classList.add('hidden');
+                document.getElementById(`btn-${id}`).className = "aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent";
+            });
+
+            document.getElementById(`aba-${abaId}`).classList.remove('hidden');
+            document.getElementById(`btn-${abaId}`).className = "aba-btn active flex items-center px-3 py-5 text-sm font-medium transition-all text-corp-primary border-b-2 border-corp-primary";
+        }
+
+        // --- MODAL CUSTOMIZADO ---
+        let modalConfirmAction = null;
+        function mostrarModal(titulo, mensagem, iconeClass, confirmBtnText, confirmColor, action) {
+            const modal = document.getElementById('custom-modal');
+            document.getElementById('modal-title').textContent = titulo;
+            document.getElementById('modal-message').textContent = mensagem;
+            
+            const iconEl = document.getElementById('modal-icon');
+            iconEl.className = `fa-solid ${iconeClass}`;
+            
+            const btnConfirm = document.getElementById('modal-btn-confirm');
+            btnConfirm.textContent = confirmBtnText;
+            // Reseta e aplica classes de cor
+            btnConfirm.className = `flex-1 text-white px-4 py-2.5 rounded text-sm font-medium transition-colors shadow-sm ${confirmColor}`;
+            
+            modalConfirmAction = action;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => document.getElementById('modal-content').classList.remove('scale-95'), 10);
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-content').classList.add('scale-95');
+            setTimeout(() => {
+                document.getElementById('custom-modal').classList.add('hidden');
+                document.getElementById('custom-modal').classList.remove('flex');
+                modalConfirmAction = null;
+            }, 200);
+        }
+
+        document.getElementById('modal-btn-cancel').addEventListener('click', fecharModal);
+        document.getElementById('modal-btn-confirm').addEventListener('click', () => {
+            if (modalConfirmAction) modalConfirmAction();
+            fecharModal();
+        });
+
+        //        // --- GESTÃO FINANCEIRA ---
+        function salvarTransacao(event) {
+            event.preventDefault();
+            const tipo = document.querySelector('input[name="tipo_transacao"]:checked').value;
+            const desc = document.getElementById('desc-transacao').value.trim();
+            const valor = parseFloat(document.getElementById('valor-transacao').value);
+            const data = document.getElementById('data-transacao').value;
+
+            if(!desc || isNaN(valor)) return;
+
+            transacoes.unshift({ id: Date.now().toString(), tipo, descricao: desc, valor, data });
+            
+            document.getElementById('desc-transacao').value = '';
+            document.getElementById('valor-transacao').value = '';
+            renderizarTransacoes();
+            calcularTotais();
+            
+            // Retorna feedback visual sutil
+            const btn = event.target.querySelector('button');
+            const oldHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check-double mr-2"></i> Salvo!';
+            btn.classList.replace('bg-corp-primary', 'bg-emerald-600');
+            setTimeout(() => {
+                btn.innerHTML = oldHtml;
+                btn.classList.replace('bg-emerald-600', 'bg-corp-primary');
+            }, 1500);
+        }
+
+        function confirmarRemoverTransacao(id) {
+            mostrarModal("Remover Lançamento", "Confirma a exclusão deste registro contábil?", "fa-trash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", () => {
+                transacoes = transacoes.filter(t => t.id !== id);
+                renderizarTransacoes();
+                calcularTotais();
+            });
+        }
+
+        function confirmarLimparHistorico() {
+            if(!transacoes.length) return;
+            mostrarModal("Limpar Razão", "Isso apagará TODO o histórico financeiro da sessão atual.", "fa-triangle-exclamation text-rose-500", "Limpar", "bg-rose-600 hover:bg-rose-700", () => {
+                transacoes = [];
+                renderizarTransacoes();
+                calcularTotais();
+            });
+        }
+
+        function calcularTotais() {
+            const hoje = new Date();
+            const anoMesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+            
+            let entradasMes = 0;
+            let saidasMes = 0;
+
+            transacoes.forEach(t => {
+                if (t.data.startsWith(anoMesAtual)) {
+                    if (t.tipo === 'receita') entradasMes += t.valor;
+                    if (t.tipo === 'despesa') saidasMes += t.valor;
+                }
+            });
+
+            const saldo = entradasMes - saidasMes;
+
+            document.getElementById('valor-entradas').textContent = formatarMoeda(entradasMes);
+            document.getElementById('valor-saidas').textContent = formatarMoeda(saidasMes);
+            
+            const elSaldo = document.getElementById('valor-saldo');
+            elSaldo.textContent = formatarMoeda(saldo);
+            if(saldo < 0) {
+                elSaldo.className = "text-2xl font-bold text-rose-600 dark:text-rose-400";
+            } else {
+                elSaldo.className = "text-2xl font-bold text-slate-900 dark:text-white";
+            }
+        }
+
+        function renderizarTransacoes() {
+            const tbody = document.getElementById('tabela-transacoes');
+            const empty = document.getElementById('empty-state-transacoes');
+            tbody.innerHTML = '';
+            
+            if (!transacoes.length) {
+                empty.classList.remove('hidden'); empty.classList.add('flex');
+                return;
+            } else {
+                empty.classList.add('hidden'); empty.classList.remove('flex');
+            }
+
+            transacoes.forEach(t => {
+                const isReceita = t.tipo === 'receita';
+                const [ano, mes, dia] = t.data.split('-');
+                
+                const tipoBadge = isReceita 
+                    ? '<span class="bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 px-2 py-1 rounded text-xs font-medium border border-emerald-200 dark:border-emerald-800">Receita</span>'
+                    : '<span class="bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 px-2 py-1 rounded text-xs font-medium border border-rose-200 dark:border-rose-800">Despesa</span>';
+
+                const valorClass = isReceita ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400';
+                
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                        <td class="py-3 px-4 text-slate-600 dark:text-slate-400">${dia}/${mes}/${ano}</td>
+                        <td class="py-3 px-4 text-slate-900 dark:text-slate-200 font-medium">${t.descricao}</td>
+                        <td class="py-3 px-4">${tipoBadge}</td>
+                        <td class="py-3 px-4 text-right font-semibold ${valorClass}">${isReceita ? '+' : '-'} ${formatarMoeda(t.valor)}</td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="confirmarRemoverTransacao('${t.id}')" class="text-slate-400 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- GESTÃO DE PLANOS ---
+        function toggleIlimitado() {
+            const isChecked = document.getElementById('ilimitado-plano').checked;
+            const inputLimite = document.getElementById('limite-plano');
+            inputLimite.disabled = isChecked;
+            if(isChecked) inputLimite.value = '';
+        }
+
+        function salvarPlano(event) {
+            event.preventDefault();
+            const nome = document.getElementById('nome-plano').value.trim();
+            const valor = parseFloat(document.getElementById('valor-plano').value);
+            const ilimitado = document.getElementById('ilimitado-plano').checked;
+            
+            // Correção: Impede salvar um plano vazio/quebrado se não for marcado como ilimitado
+            let limite = 0;
+            if (!ilimitado) {
+                limite = parseInt(document.getElementById('limite-plano').value);
+                if (isNaN(limite) || limite < 1) {
+                    mostrarModal("Atenção", "Por favor, informe a quantidade de cortes ou marque como Ilimitado.", "fa-triangle-exclamation text-amber-500", "OK", "bg-slate-800", null);
+                    return;
+                }
+            }
+
+            planos.push({ id: Date.now().toString(), nome, valor, limiteCortes: limite, ilimitado });
+            
+            event.target.reset();
+            document.getElementById('limite-plano').disabled = false;
+            
+            renderizarPlanos();
+            atualizarSelectPlanos();
+        }
+
+        function removerPlano(id) {
+            const emUso = assinantes.some(a => a.planoId === id);
+            if(emUso) {
+                mostrarModal("Operação Negada", "Há clientes vinculados a este plano. Altere-os antes de excluir.", "fa-circle-xmark text-corp-primary", "Entendi", "bg-slate-800", () => {});
+                return;
+            }
+            mostrarModal("Excluir Plano", "Remover este plano do portfólio?", "fa-trash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", () => {
+                planos = planos.filter(p => p.id !== id);
+                renderizarPlanos();
+                atualizarSelectPlanos();
+            });
+        }
+
+        function renderizarPlanos() {
+            const lista = document.getElementById('lista-planos');
+            lista.innerHTML = '';
+            planos.forEach(p => {
+                const detail = p.ilimitado ? 'Franquia Ilimitada' : `Franquia: ${p.limiteCortes} cortes`;
+                lista.innerHTML += `
+                    <div class="border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4 rounded flex justify-between items-start hover:border-corp-primary transition-colors">
+                        <div>
+                            <h4 class="font-bold text-slate-900 dark:text-white">${p.nome}</h4>
+                            <p class="text-corp-primary font-semibold mt-1">${formatarMoeda(p.valor)} <span class="text-xs text-slate-500 font-normal">/mês</span></p>
+                            <p class="text-xs text-slate-500 mt-2 flex items-center"><i class="fa-solid fa-chart-line mr-1.5 opacity-70"></i> ${detail}</p>
+                        </div>
+                        <button onclick="removerPlano('${p.id}')" class="text-slate-400 hover:text-rose-500 transition-colors p-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function atualizarSelectPlanos() {
+            const select = document.getElementById('plano-assinante');
+            select.innerHTML = '<option value="">Selecione um plano...</option>';
+            planos.forEach(p => {
+                select.innerHTML += `<option value="${p.id}">${p.nome} - ${formatarMoeda(p.valor)}</option>`;
+            });
+        }
+
+        // --- GESTÃO DE ASSINANTES E CHECK-IN ---
+        function salvarAssinante(event) {
+            event.preventDefault();
+            const nome = document.getElementById('nome-assinante').value.trim();
+            const tel = document.getElementById('tel-assinante').value.trim();
+            const planoId = document.getElementById('plano-assinante').value;
+            const vencimento = document.getElementById('vencimento-assinante').value;
+
+            if (!nome || !planoId) return;
+
+            assinantes.push({
+                id: Date.now().toString(),
+                nome, telefone: tel, planoId, vencimento,
+                status: 'ativo', cortesUsados: 0
+            });
+            assinantes.sort((a, b) => a.nome.localeCompare(b.nome));
+            
+            event.target.reset();
+            renderizarAssinantes();
+            
+            // Redireciona sutilmente foco para a lista
+            document.getElementById('tabela-assinantes').scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
+        function alternarStatusAssinante(id) {
+            const ass = assinantes.find(a => a.id === id);
+            if(ass.status === 'ativo') ass.status = 'pendente';
+            else if(ass.status === 'pendente') ass.status = 'inativo';
+            else ass.status = 'ativo';
+            
+            renderizarAssinantes();
+        }
+
+        function realizarCheckin(id) {
+            const ass = assinantes.find(a => a.id === id);
+            const plano = planos.find(p => p.id === ass.planoId);
+            
+            if(!plano) return;
+            
+            if(!plano.ilimitado && ass.cortesUsados >= plano.limiteCortes) {
+                mostrarModal("Franquia Esgotada", "Este cliente atingiu o limite de serviços do ciclo atual.", "fa-ban text-rose-500", "Ok", "bg-slate-800", () => {});
+                return;
+            }
+            
+            ass.cortesUsados++;
+            renderizarAssinantes();
+        }
+
+        function resetarCiclo(id) {
+            const ass = assinantes.find(a => a.id === id);
+            ass.cortesUsados = 0;
+            renderizarAssinantes();
+        }
+
+        function confirmarRemoverAssinante(id) {
+            mostrarModal("Desligar Cliente", "Remover este assinante da base de dados?", "fa-user-slash text-rose-500", "Remover", "bg-rose-600 hover:bg-rose-700", () => {
+                assinantes = assinantes.filter(a => a.id !== id);
+                renderizarAssinantes();
+            });
+        }
+
+        function lancarMensalidade(id) {
+            const ass = assinantes.find(a => a.id === id);
+            const plano = planos.find(p => p.id === ass.planoId);
+            
+            if(!plano) return;
+
+            mudarAba('financeiro');
+            document.querySelector('input[value="receita"]').checked = true;
+            document.getElementById('desc-transacao').value = `Fatura Assinatura - ${ass.nome}`;
+            document.getElementById('valor-transacao').value = plano.valor;
+            document.getElementById('valor-transacao').focus();
+        }
+
+        function renderizarAssinantes() {
+            const tbody = document.getElementById('tabela-assinantes');
+            const empty = document.getElementById('empty-state-assinantes');
+            
+            const ativos = assinantes.filter(a => a.status === 'ativo').length;
+            document.getElementById('total-assinantes-badge').textContent = assinantes.length;
+            document.getElementById('valor-ativos').textContent = ativos;
+            
+            tbody.innerHTML = '';
+            
+            if (!assinantes.length) {
+                empty.classList.remove('hidden'); empty.classList.add('flex'); return;
+            } else {
+                empty.classList.add('hidden'); empty.classList.remove('flex');
+            }
+
+            assinantes.forEach(ass => {
+                const plano = planos.find(p => p.id === ass.planoId) || { nome: 'Plano Inválido', ilimitado: true, limiteCortes: 0 };
+                
+                // Estilo do Status
+                let statusBadge = '';
+                if (ass.status === 'ativo') {
+                    statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-xs px-2 py-1 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-medium transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-500/20 w-20">Ativo</button>`;
+                } else if (ass.status === 'pendente') {
+                    statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-xs px-2 py-1 rounded bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200 dark:border-amber-800 font-medium transition-colors hover:bg-amber-100 dark:hover:bg-amber-500/20 w-20">Atrasado</button>`;
+                } else {
+                    statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-xs px-2 py-1 rounded bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200 dark:border-rose-800 font-medium transition-colors hover:bg-rose-100 dark:hover:bg-rose-500/20 w-20">Inativo</button>`;
+                }
+
+                const limiteExcedido = !plano.ilimitado && ass.cortesUsados >= plano.limiteCortes;
+                const progressoCortes = plano.ilimitado 
+                    ? `<span class="text-xs font-medium text-corp-primary">${ass.cortesUsados} (Ilimitado)</span>`
+                    : `<span class="text-xs font-medium ${limiteExcedido ? 'text-rose-500' : 'text-slate-600 dark:text-slate-400'}">${ass.cortesUsados} / ${plano.limiteCortes} cortes</span>`;
+
+                const rowClass = ass.status === 'inativo' ? 'opacity-60 bg-slate-50/50 dark:bg-slate-900/30' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50';
+
+                tbody.innerHTML += `
+                    <tr class="${rowClass} transition-colors">
+                        <td class="py-3 px-4">
+                            <div class="font-medium text-slate-900 dark:text-slate-200">${ass.nome}</div>
+                            <div class="text-xs text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp opacity-70 mr-1"></i>${ass.telefone || 'Sem contato'}</div>
+                        </td>
+                        <td class="py-3 px-4 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                            ${plano.nome}
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="flex flex-col space-y-1">
+                                ${progressoCortes}
+                                <button onclick="resetarCiclo('${ass.id}')" class="text-[10px] text-corp-primary hover:underline self-start">Renovar Ciclo</button>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-slate-600 dark:text-slate-300 text-sm">
+                            Dia ${ass.vencimento}
+                        </td>
+                        <td class="py-3 px-4">
+                            ${statusBadge}
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="flex justify-center space-x-2">
+                                <button onclick="realizarCheckin('${ass.id}')" ${limiteExcedido || ass.status === 'inativo' ? 'disabled' : ''} class="w-8 h-8 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors disabled:opacity-30 flex items-center justify-center" title="Registrar Check-in">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                                <button onclick="lancarMensalidade('${ass.id}')" class="w-8 h-8 rounded bg-corp-primary/10 hover:bg-corp-primary/20 text-corp-primary transition-colors flex items-center justify-center" title="Lançar Fatura">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                                </button>
+                                <button onclick="confirmarRemoverAssinante('${ass.id}')" class="w-8 h-8 rounded bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-500 transition-colors flex items-center justify-center" title="Excluir">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- UTILS ---
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+    </script>
+</body>
+</html>
