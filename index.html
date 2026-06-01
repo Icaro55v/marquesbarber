@@ -208,6 +208,19 @@
             <!-- ============================================== -->
             <div id="aba-financeiro" class="block animate-fade-in">
                 
+                <!-- Cabeçalho e Filtro de Mês -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Painel Financeiro</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Acompanhe seu relatório mensal detalhado.</p>
+                    </div>
+                    <div class="flex items-center bg-white dark:bg-corp-cardDark border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-1">
+                        <button onclick="mudarMes(-1)" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Mês Anterior"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <input type="month" id="filtro-mes" onchange="atualizarFiltroMes()" class="bg-transparent px-2 text-sm font-bold text-slate-700 dark:text-slate-200 outline-none cursor-pointer [color-scheme:light] dark:[color-scheme:dark]">
+                        <button onclick="mudarMes(1)" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Próximo Mês"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
                 <!-- Cards ERP (Resumo) -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
                     <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-4 sm:p-5 shadow-sm theme-transition flex flex-col justify-center">
@@ -689,6 +702,9 @@
             const dia = String(now.getDate()).padStart(2, '0');
             document.getElementById('data-transacao').value = `${ano}-${mes}-${dia}`;
 
+            // Configurar mês atual no filtro do relatório
+            document.getElementById('filtro-mes').value = `${ano}-${mes}`;
+
             iniciarListeners();
         }
 
@@ -786,13 +802,26 @@
             });
         };
 
+        window.mudarMes = (delta) => {
+            const input = document.getElementById('filtro-mes');
+            if(!input.value) return;
+            let [ano, mes] = input.value.split('-');
+            let data = new Date(ano, parseInt(mes) - 1 + delta, 1);
+            input.value = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, '0')}`;
+            atualizarFiltroMes();
+        };
+
+        window.atualizarFiltroMes = () => {
+            renderizarTransacoes();
+            calcularTotais();
+        };
+
         function calcularTotais() {
-            const hoje = new Date();
-            const anoMesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+            const filtroMes = document.getElementById('filtro-mes').value;
             let entradasMes = 0; let saidasMes = 0;
 
             transacoes.forEach(t => {
-                if (t.data.startsWith(anoMesAtual)) {
+                if (t.data.startsWith(filtroMes)) {
                     if (t.tipo === 'receita') entradasMes += t.valor;
                     if (t.tipo === 'despesa') saidasMes += t.valor;
                 }
@@ -808,17 +837,20 @@
         }
 
         function renderizarTransacoes() {
+            const filtroMes = document.getElementById('filtro-mes').value;
             const tbody = document.getElementById('tabela-transacoes');
             const empty = document.getElementById('empty-state-transacoes');
             tbody.innerHTML = '';
             
-            if (!transacoes.length) {
+            const transacoesFiltradas = transacoes.filter(t => t.data.startsWith(filtroMes));
+
+            if (!transacoesFiltradas.length) {
                 empty.classList.remove('hidden'); empty.classList.add('flex'); return;
             } else {
                 empty.classList.add('hidden'); empty.classList.remove('flex');
             }
 
-            transacoes.forEach(t => {
+            transacoesFiltradas.forEach(t => {
                 const isReceita = t.tipo === 'receita';
                 const parts = t.data.split('-');
                 const formatData = parts.length === 3 ? `${parts[2]}/${parts[1]}` : t.data; 
