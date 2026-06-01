@@ -61,58 +61,58 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col bg-corp-bgLight text-slate-900 dark:bg-corp-bgDark dark:text-slate-100 theme-transition overflow-x-hidden">
 
-    <!-- TELA DE LOGIN & REGISTRO -->
+    <!-- TELA DE LOGIN & REGISTRO (Tamanho Reduzido) -->
     <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-corp-bgDark theme-transition px-4 sm:px-0">
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 dark:opacity-10 pointer-events-none"></div>
         
-        <div class="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-corp-cardDark rounded-2xl shadow-2xl border border-corp-borderLight dark:border-corp-borderDark relative z-10">
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-zinc-950 border-4 border-corp-primary dark:border-zinc-700 mb-4 shadow-lg overflow-hidden flex-shrink-0">
+        <div class="w-full max-w-sm p-6 sm:p-7 bg-white dark:bg-corp-cardDark rounded-2xl shadow-2xl border border-corp-borderLight dark:border-corp-borderDark relative z-10">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-950 border-[3px] border-corp-primary dark:border-zinc-700 mb-3 shadow-lg overflow-hidden flex-shrink-0">
                     <img src="image_d2de27.png" alt="Logo Marques Barber" class="w-full h-full object-cover scale-110" onerror="this.src='https://placehold.co/100x100/3f3f46/ffffff?text=Logo'">
                 </div>
-                <h1 class="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-wider">Marques<span class="text-corp-primary dark:text-zinc-400">Contábil</span></h1>
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1" id="login-subtitle">Gestão Financeira e Assinantes</p>
+                <h1 class="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-wider">Marques<span class="text-corp-primary dark:text-zinc-400">Contábil</span></h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" id="login-subtitle">Gestão Financeira e Assinantes</p>
             </div>
 
             <form id="login-form" onsubmit="handleAuth(event)">
-                <div class="mb-5">
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">E-mail</label>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 uppercase">E-mail</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fa-regular fa-envelope text-slate-400"></i>
+                            <i class="fa-regular fa-envelope text-slate-400 text-sm"></i>
                         </div>
                         <input type="email" id="login-email" required placeholder="seu@email.com" 
-                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-4 py-3.5 sm:py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-9 pr-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all text-sm">
                     </div>
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Senha</label>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 uppercase">Senha</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-lock text-slate-400"></i>
+                            <i class="fa-solid fa-lock text-slate-400 text-sm"></i>
                         </div>
                         <input type="password" id="login-pass" required placeholder="••••••••" minlength="6"
-                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-10 py-3.5 sm:py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-9 pr-10 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all text-sm">
                         <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Mostrar/Ocultar Senha">
                             <i id="toggle-pass-icon" class="fa-solid fa-eye"></i>
                         </button>
                     </div>
                     <p id="auth-error" class="text-red-500 text-xs mt-2 hidden font-medium"><i class="fa-solid fa-circle-exclamation mr-1"></i> <span id="auth-error-msg">Erro na autenticação.</span></p>
                 </div>
-                <button type="submit" id="btn-submit-auth" class="w-full bg-corp-primary hover:bg-corp-primaryHover text-white font-bold py-3.5 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
+                <button type="submit" id="btn-submit-auth" class="w-full bg-corp-primary hover:bg-corp-primaryHover text-white font-bold py-3 rounded-lg transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center text-sm">
                     <i class="fa-solid fa-right-to-bracket mr-2"></i> Acessar Sistema
                 </button>
                 
                 <div class="mt-4 text-center">
-                    <button type="button" onclick="toggleAuthMode()" id="btn-toggle-auth" class="text-sm text-corp-primary dark:text-zinc-400 hover:underline py-2">
+                    <button type="button" onclick="toggleAuthMode()" id="btn-toggle-auth" class="text-xs font-medium text-corp-primary dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors py-2">
                         Não possui conta? Criar agora
                     </button>
                 </div>
             </form>
             
-            <div class="mt-6 text-center border-t border-slate-200 dark:border-slate-700 pt-5">
-                <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800/50 text-sm text-zinc-600 dark:text-zinc-400">
-                    O primeiro usuário a se registrar será definido como <b>Administrador</b> automaticamente.
+            <div class="mt-5 text-center border-t border-slate-200 dark:border-slate-700 pt-4">
+                <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-lg p-3 border border-zinc-200 dark:border-zinc-800/50 text-[11px] text-zinc-600 dark:text-zinc-400">
+                    O primeiro usuário a se registrar será <b>Administrador</b>.
                 </div>
             </div>
         </div>
@@ -514,12 +514,11 @@
     <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getDatabase, ref, set, push, update, remove, onValue, get } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-        // Configuração Firebase Nova
-        const isCanvas = typeof __firebase_config !== 'undefined';
-        const firebaseConfig = isCanvas ? JSON.parse(__firebase_config) : {
+        // Configuração Firebase
+        const firebaseConfig = {
             apiKey: "AIzaSyBgn6J5yb2TUlZ_ufsu8v57NAZZFG-aHBE",
             authDomain: "contabil-b9eb0.firebaseapp.com",
             databaseURL: "https://contabil-b9eb0-default-rtdb.firebaseio.com",
@@ -532,18 +531,11 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
-        // Helper para coleções dinâmicas (Permite rodar no Canvas e no Hospedagem própria)
-        const getColRef = (colName) => {
-            if (isCanvas) {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'barber-default';
-                return collection(db, 'artifacts', appId, 'public', 'data', colName);
-            }
-            return collection(db, colName); // Usa coleções raiz na hospedagem própria
-        };
+        // NÓ RAIZ DO BANCO DE DADOS (Organização que você pediu)
+        const dbRoot = 'contabil';
 
-        // Estado Local (Espelho do BD)
         let currentUserDoc = null;
         let transacoes = [];
         let assinantes = [];
@@ -552,10 +544,6 @@
         let listeners = [];
         let isLoginMode = true;
 
-        // ==========================================
-        // SISTEMA DE AUTENTICAÇÃO E ADMINISTRAÇÃO
-        // ==========================================
-        
         window.togglePasswordVisibility = () => {
             const passInput = document.getElementById('login-pass');
             const passIcon = document.getElementById('toggle-pass-icon');
@@ -603,41 +591,22 @@
             btn.disabled = true;
 
             try {
-                if (isCanvas) {
-                    // ADAPTAÇÃO: O ambiente interno usa autenticação anónima por segurança
-                    let userCred;
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        userCred = await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        userCred = await signInAnonymously(auth);
-                    }
-                    
-                    // Garante que é criado um perfil de Administrador para que possa visualizar o sistema completo no modo de teste
-                    await setDoc(doc(getColRef('usuarios'), userCred.user.uid), {
-                        email: email || 'admin@sistema.local',
-                        approved: true, 
-                        isAdmin: true, 
-                        createdAt: new Date().toISOString()
-                    }, { merge: true });
-                    
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, pass);
                 } else {
-                    // CÓDIGO ORIGINAL (Usado fora deste ambiente de teste)
-                    if (isLoginMode) {
-                        await signInWithEmailAndPassword(auth, email, pass);
-                    } else {
-                        const userCred = await createUserWithEmailAndPassword(auth, email, pass);
-                        
-                        const usuariosRef = getColRef('usuarios');
-                        const snap = await getDocs(usuariosRef);
-                        const isFirstUser = snap.empty;
+                    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+                    
+                    const usuariosRef = ref(db, `${dbRoot}/usuarios`);
+                    const snap = await get(usuariosRef);
+                    // Aqui a Mágica Acontece: Se o banco estiver vazio, ele te faz ADMIN na hora!
+                    const isFirstUser = !snap.exists() || Object.keys(snap.val()).length === 0;
 
-                        await setDoc(doc(usuariosRef, userCred.user.uid), {
-                            email: email,
-                            approved: isFirstUser, // Aprova automaticamente se for o primeiro
-                            isAdmin: isFirstUser, // Torna Admin automaticamente se for o primeiro
-                            createdAt: new Date().toISOString()
-                        });
-                    }
+                    await set(ref(db, `${dbRoot}/usuarios/${userCred.user.uid}`), {
+                        email: email,
+                        approved: isFirstUser, // Aprova automaticamente se for o primeiro
+                        isAdmin: isFirstUser, // Torna Admin automaticamente se for o primeiro
+                        createdAt: new Date().toISOString()
+                    });
                 }
             } catch (error) {
                 console.error(error);
@@ -645,7 +614,7 @@
                 if(error.code === 'auth/email-already-in-use') errorMsg.textContent = 'E-mail já cadastrado.';
                 else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') errorMsg.textContent = 'E-mail ou senha incorretos.';
                 else if(error.code === 'auth/weak-password') errorMsg.textContent = 'A senha deve ter pelo menos 6 caracteres.';
-                else errorMsg.textContent = 'Erro na autenticação. Tente novamente.';
+                else errorMsg.textContent = 'Verifique as regras de leitura/escrita no Realtime Database.';
                 
                 btn.innerHTML = oldHtml;
                 btn.disabled = false;
@@ -662,23 +631,20 @@
             const waitScreen = document.getElementById('waiting-screen');
             const btnSubmit = document.getElementById('btn-submit-auth');
 
-            // Reset UI auth button
             btnSubmit.innerHTML = isLoginMode ? '<i class="fa-solid fa-right-to-bracket mr-2"></i> Acessar Sistema' : '<i class="fa-solid fa-user-plus mr-2"></i> Criar Nova Conta';
             btnSubmit.disabled = false;
 
             if (user) {
-                // Fetch User Doc
-                const userRef = doc(getColRef('usuarios'), user.uid);
-                const userSnap = await getDoc(userRef);
+                const userRef = ref(db, `${dbRoot}/usuarios/${user.uid}`);
+                const userSnap = await get(userRef);
 
                 if (userSnap.exists()) {
-                    currentUserDoc = { id: user.uid, ...userSnap.data() };
+                    currentUserDoc = { id: user.uid, ...userSnap.val() };
                 } else {
                     currentUserDoc = { id: user.uid, email: user.email, approved: false, isAdmin: false };
                 }
 
                 if (currentUserDoc.approved) {
-                    // Usuário aprovado -> Carrega Sistema
                     loginScreen.classList.add('hidden');
                     waitScreen.classList.add('hidden');
                     waitScreen.classList.remove('flex');
@@ -694,7 +660,6 @@
                     
                     iniciarApp();
                 } else {
-                    // Aguardando aprovação
                     loginScreen.classList.add('hidden');
                     appScreen.classList.add('hidden');
                     appScreen.classList.remove('flex');
@@ -702,7 +667,6 @@
                     waitScreen.classList.add('flex');
                 }
             } else {
-                // Deslogado
                 currentUserDoc = null;
                 limparListeners();
                 appScreen.classList.add('hidden');
@@ -713,18 +677,12 @@
             }
         });
 
-        // ==========================================
-        // FUNÇÕES DO BANCO DE DADOS E UI
-        // ==========================================
-
         function iniciarApp() {
-            // Aplicar tema
             const html = document.documentElement;
             if (!html.classList.contains('dark')) {
                 document.getElementById('theme-icon').classList.replace('fa-sun', 'fa-moon');
             }
 
-            // Setar data hoje
             const now = new Date();
             const ano = now.getFullYear();
             const mes = String(now.getMonth() + 1).padStart(2, '0');
@@ -739,38 +697,48 @@
             listeners = [];
         }
 
+        const mapDataToArray = (snap) => {
+            if (!snap.exists()) return [];
+            const data = snap.val();
+            return Object.entries(data).map(([id, val]) => ({ id, ...val }));
+        };
+
         function iniciarListeners() {
             limparListeners();
 
-            // PLANOS
-            listeners.push(onSnapshot(getColRef('planos'), (snap) => {
-                planos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            // Lendo de /contabil/planos
+            const unsubPlanos = onValue(ref(db, `${dbRoot}/planos`), (snap) => {
+                planos = mapDataToArray(snap);
                 renderizarPlanos();
                 atualizarSelectPlanos();
                 renderizarAssinantes(); 
-            }));
+            });
+            listeners.push(unsubPlanos);
 
-            // ASSINANTES
-            listeners.push(onSnapshot(getColRef('assinantes'), (snap) => {
-                assinantes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            // Lendo de /contabil/assinantes
+            const unsubAssinantes = onValue(ref(db, `${dbRoot}/assinantes`), (snap) => {
+                assinantes = mapDataToArray(snap);
                 assinantes.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
                 renderizarAssinantes();
-            }));
+            });
+            listeners.push(unsubAssinantes);
 
-            // TRANSAÇÕES
-            listeners.push(onSnapshot(getColRef('transacoes'), (snap) => {
-                transacoes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            // Lendo de /contabil/transacoes
+            const unsubTransacoes = onValue(ref(db, `${dbRoot}/transacoes`), (snap) => {
+                transacoes = mapDataToArray(snap);
                 transacoes.sort((a, b) => new Date(b.createdAt || b.data) - new Date(a.createdAt || a.data));
                 renderizarTransacoes();
                 calcularTotais();
-            }));
+            });
+            listeners.push(unsubTransacoes);
 
-            // USUÁRIOS (SÓ ADMIN)
+            // Lendo de /contabil/usuarios
             if(currentUserDoc?.isAdmin) {
-                listeners.push(onSnapshot(getColRef('usuarios'), (snap) => {
-                    usuariosCadastrados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                const unsubUsuarios = onValue(ref(db, `${dbRoot}/usuarios`), (snap) => {
+                    usuariosCadastrados = mapDataToArray(snap);
                     renderizarUsuarios();
-                }));
+                });
+                listeners.push(unsubUsuarios);
             }
         }
 
@@ -790,7 +758,7 @@
             btn.disabled = true;
 
             try {
-                await addDoc(getColRef('transacoes'), {
+                await push(ref(db, `${dbRoot}/transacoes`), {
                     tipo, descricao: desc, valor, data,
                     createdAt: new Date().toISOString()
                 });
@@ -814,7 +782,7 @@
 
         window.confirmarRemoverTransacao = (id) => {
             mostrarModal("Remover Lançamento", "Confirma a exclusão deste registro contábil?", "fa-trash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", async () => {
-                await deleteDoc(doc(getColRef('transacoes'), id));
+                await remove(ref(db, `${dbRoot}/transacoes/${id}`));
             });
         };
 
@@ -853,7 +821,7 @@
             transacoes.forEach(t => {
                 const isReceita = t.tipo === 'receita';
                 const parts = t.data.split('-');
-                const formatData = parts.length === 3 ? `${parts[2]}/${parts[1]}` : t.data; // Mostra DD/MM para caber melhor
+                const formatData = parts.length === 3 ? `${parts[2]}/${parts[1]}` : t.data; 
                 
                 const tipoIcon = isReceita 
                     ? '<i class="fa-solid fa-arrow-up text-emerald-500"></i>'
@@ -903,7 +871,7 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
             btn.disabled = true;
 
-            await addDoc(getColRef('planos'), {
+            await push(ref(db, `${dbRoot}/planos`), {
                 nome, valor, limiteCortes: limite, ilimitado,
                 createdAt: new Date().toISOString()
             });
@@ -921,7 +889,7 @@
                 return;
             }
             mostrarModal("Excluir Plano", "Remover este plano do portfólio?", "fa-trash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", async () => {
-                await deleteDoc(doc(getColRef('planos'), id));
+                await remove(ref(db, `${dbRoot}/planos/${id}`));
             });
         };
 
@@ -966,7 +934,7 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Salvando...';
 
-            await addDoc(getColRef('assinantes'), {
+            await push(ref(db, `${dbRoot}/assinantes`), {
                 nome, telefone: tel, planoId, vencimento,
                 status: 'ativo', cortesUsados: 0,
                 createdAt: new Date().toISOString()
@@ -976,7 +944,6 @@
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Cliente';
             
-            // Em mobile não scrolamos para baixo pra não desorientar o usuário, no desk é ok
             if(window.innerWidth > 1024) {
                 document.getElementById('tabela-assinantes').scrollIntoView({ behavior: 'smooth', block: 'end' });
             }
@@ -987,7 +954,7 @@
             let newStatus = 'ativo';
             if(ass.status === 'ativo') newStatus = 'pendente';
             else if(ass.status === 'pendente') newStatus = 'inativo';
-            await updateDoc(doc(getColRef('assinantes'), id), { status: newStatus });
+            await update(ref(db, `${dbRoot}/assinantes/${id}`), { status: newStatus });
         };
 
         window.realizarCheckin = async (id) => {
@@ -999,16 +966,16 @@
                 mostrarModal("Franquia Esgotada", "Limite de serviços do ciclo atingido para este assinante.", "fa-ban text-rose-500", "Entendi", "bg-slate-800", null);
                 return;
             }
-            await updateDoc(doc(getColRef('assinantes'), id), { cortesUsados: ass.cortesUsados + 1 });
+            await update(ref(db, `${dbRoot}/assinantes/${id}`), { cortesUsados: ass.cortesUsados + 1 });
         };
 
         window.resetarCiclo = async (id) => {
-            await updateDoc(doc(getColRef('assinantes'), id), { cortesUsados: 0 });
+            await update(ref(db, `${dbRoot}/assinantes/${id}`), { cortesUsados: 0 });
         };
 
         window.confirmarRemoverAssinante = (id) => {
             mostrarModal("Excluir Cliente", "Remover definitivamente este assinante da base de dados?", "fa-user-slash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", async () => {
-                await deleteDoc(doc(getColRef('assinantes'), id));
+                await remove(ref(db, `${dbRoot}/assinantes/${id}`));
             });
         };
 
@@ -1031,7 +998,6 @@
             const ativos = assinantes.filter(a => a.status === 'ativo').length;
             document.getElementById('total-assinantes-badge').textContent = assinantes.length;
             
-            // O valor-ativos pode não existir na tela se for mobile e estiver na tela de caixa
             const elAtivos = document.getElementById('valor-ativos');
             if (elAtivos) elAtivos.textContent = ativos;
             
@@ -1096,10 +1062,10 @@
 
         // --- GESTÃO DE USUÁRIOS (ADMIN) ---
         window.alterarStatusUsuario = async (uid, isApproved) => {
-            await updateDoc(doc(getColRef('usuarios'), uid), { approved: isApproved });
+            await update(ref(db, `${dbRoot}/usuarios/${uid}`), { approved: isApproved });
         };
         window.alterarNivelUsuario = async (uid, isAdmin) => {
-            await updateDoc(doc(getColRef('usuarios'), uid), { isAdmin: isAdmin });
+            await update(ref(db, `${dbRoot}/usuarios/${uid}`), { isAdmin: isAdmin });
         };
 
         function renderizarUsuarios() {
@@ -1142,31 +1108,25 @@
 
         // --- UTILS & NAVEGAÇÃO ---
         window.mudarAba = (abaId) => {
-            // Oculta todos os containers
             ['financeiro', 'assinantes', 'planos', 'usuarios'].forEach(id => {
                 const elAba = document.getElementById(`aba-${id}`);
                 if(elAba) elAba.classList.add('hidden');
             });
 
-            // Mostra o container alvo
             document.getElementById(`aba-${abaId}`).classList.remove('hidden');
 
-            // Reseta estilo de todos os botões (desktop e mobile)
             document.querySelectorAll('.aba-btn').forEach(btn => {
-                // Desktop styles
                 btn.classList.remove('active', 'border-corp-primary', 'text-corp-primary', 'dark:text-white', 'text-slate-900');
                 if(!btn.classList.contains('mobile-btn')) {
                     btn.classList.add('text-slate-500', 'border-transparent');
                 }
                 
-                // Mobile styles
                 if(btn.classList.contains('mobile-btn')) {
                     btn.classList.remove('text-corp-primary', 'dark:text-white');
                     btn.classList.add('text-slate-400');
                 }
             });
 
-            // Aplica estilo aos botões ativos correspondentes à aba
             document.querySelectorAll(`.aba-btn[data-target="${abaId}"]`).forEach(btn => {
                 if(!btn.classList.contains('mobile-btn')) {
                     btn.classList.remove('text-slate-500', 'border-transparent');
@@ -1177,7 +1137,6 @@
                 }
             });
             
-            // Scroll para o topo suave caso troque de aba no mobile
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -1225,7 +1184,7 @@
                 const oldText = btn.textContent;
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aguarde...';
                 await modalConfirmAction();
-                btn.textContent = oldText; // Em caso de reuso antes de fechar
+                btn.textContent = oldText; 
             }
             window.fecharModal();
         });
