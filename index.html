@@ -21,11 +21,11 @@
                     },
                     colors: {
                         corp: {
-                            primary: '#3f3f46', // zinc-700 (Cinza Escuro Profissional)
-                            primaryHover: '#27272a', // zinc-800 (Quase Preto)
-                            bgDark: '#09090b', // zinc-950 (Fundo Preto)
-                            bgLight: '#f4f4f5', // zinc-100 (Cinza Claro)
-                            cardDark: '#18181b', // zinc-900 (Cartão Preto Fosco)
+                            primary: '#3f3f46', // zinc-700
+                            primaryHover: '#27272a', // zinc-800
+                            bgDark: '#09090b', // zinc-950
+                            bgLight: '#f4f4f5', // zinc-100
+                            cardDark: '#18181b', // zinc-900
                             cardLight: '#ffffff', // Branco
                             borderDark: '#27272a', // zinc-800
                             borderLight: '#e4e4e7', // zinc-200
@@ -37,7 +37,6 @@
     </script>
 
     <style>
-        /* Custom Scrollbar - Professional Look */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         .dark ::-webkit-scrollbar-track { background: #09090b; }
         .dark ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
@@ -54,34 +53,32 @@
         
         body { transition: background-color 0.3s, color 0.3s; }
         .theme-transition { transition: all 0.3s ease; }
-        
-        /* Table Styles */
         th { letter-spacing: 0.05em; text-transform: uppercase; }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col bg-corp-bgLight text-slate-900 dark:bg-corp-bgDark dark:text-slate-100 theme-transition overflow-x-hidden">
 
-    <!-- TELA DE LOGIN -->
+    <!-- TELA DE LOGIN & REGISTRO -->
     <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-corp-bgDark theme-transition">
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 dark:opacity-10 pointer-events-none"></div>
         
         <div class="w-full max-w-md p-8 bg-white dark:bg-corp-cardDark rounded-2xl shadow-2xl border border-corp-borderLight dark:border-corp-borderDark relative z-10 mx-4">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-corp-primary dark:text-white mb-4 shadow-sm">
-                    <i class="fa-solid fa-chart-pie text-2xl"></i>
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-corp-primary dark:text-white mb-4 shadow-sm overflow-hidden">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/100x100/3f3f46/ffffff?text=Logo'">
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-wider">Marques<span class="text-corp-primary dark:text-zinc-400">Contábil</span></h1>
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Gestão Financeira e Assinantes</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1" id="login-subtitle">Gestão Financeira e Assinantes</p>
             </div>
 
-            <form id="login-form" onsubmit="realizarLogin(event)">
+            <form id="login-form" onsubmit="handleAuth(event)">
                 <div class="mb-5">
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Usuário</label>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">E-mail</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fa-regular fa-user text-slate-400"></i>
+                            <i class="fa-regular fa-envelope text-slate-400"></i>
                         </div>
-                        <input type="text" id="login-user" required placeholder="Digite seu usuário" 
+                        <input type="email" id="login-email" required placeholder="seu@email.com" 
                             class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
                     </div>
                 </div>
@@ -91,29 +88,41 @@
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fa-solid fa-lock text-slate-400"></i>
                         </div>
-                        <input type="password" id="login-pass" required placeholder="••••••••" 
+                        <input type="password" id="login-pass" required placeholder="••••••••" minlength="6"
                             class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
                     </div>
-                    <p id="login-error" class="text-red-500 text-xs mt-2 hidden font-medium"><i class="fa-solid fa-circle-exclamation mr-1"></i> Usuário ou senha incorretos.</p>
+                    <p id="auth-error" class="text-red-500 text-xs mt-2 hidden font-medium"><i class="fa-solid fa-circle-exclamation mr-1"></i> <span id="auth-error-msg">Erro na autenticação.</span></p>
                 </div>
-                <button type="submit" class="w-full bg-corp-primary hover:bg-corp-primaryHover text-white font-bold py-3.5 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
+                <button type="submit" id="btn-submit-auth" class="w-full bg-corp-primary hover:bg-corp-primaryHover text-white font-bold py-3.5 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
                     <i class="fa-solid fa-right-to-bracket mr-2"></i> Acessar Sistema
                 </button>
+                
+                <div class="mt-4 text-center">
+                    <button type="button" onclick="toggleAuthMode()" id="btn-toggle-auth" class="text-sm text-corp-primary dark:text-zinc-400 hover:underline">
+                        Não possui conta? Criar agora
+                    </button>
+                </div>
             </form>
             
             <div class="mt-6 text-center border-t border-slate-200 dark:border-slate-700 pt-5">
-                <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800/50">
-                    <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-3"><i class="fa-solid fa-key mr-1.5"></i> Credenciais de Primeiro Acesso</h3>
-                    <div class="flex justify-center space-x-3 text-sm">
-                        <div class="bg-white dark:bg-black px-3 py-1.5 rounded border border-zinc-200 dark:border-zinc-800">
-                            <span class="text-zinc-500">Usuário:</span> <b class="text-corp-primary dark:text-white ml-1">admin</b>
-                        </div>
-                        <div class="bg-white dark:bg-black px-3 py-1.5 rounded border border-zinc-200 dark:border-zinc-800">
-                            <span class="text-zinc-500">Senha:</span> <b class="text-corp-primary dark:text-white ml-1">admin</b>
-                        </div>
-                    </div>
+                <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800/50 text-sm text-zinc-600 dark:text-zinc-400">
+                    O primeiro usuário a se registrar será definido como <b>Administrador</b> automaticamente.
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- TELA DE AGUARDANDO APROVAÇÃO -->
+    <div id="waiting-screen" class="fixed inset-0 z-50 hidden flex-col items-center justify-center bg-slate-100 dark:bg-corp-bgDark theme-transition">
+        <div class="w-full max-w-md p-8 bg-white dark:bg-corp-cardDark rounded-2xl shadow-2xl border border-corp-borderLight dark:border-corp-borderDark text-center mx-4">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-500 mb-6 border border-amber-200 dark:border-amber-800">
+                <i class="fa-solid fa-clock-rotate-left text-3xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Conta em Análise</h2>
+            <p class="text-slate-600 dark:text-slate-400 mb-8">Sua conta foi criada com sucesso, mas você precisa aguardar a aprovação de um Administrador para acessar o sistema.</p>
+            <button onclick="sair()" class="w-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold py-3 rounded-lg transition-all">
+                Voltar para Login
+            </button>
         </div>
     </div>
 
@@ -123,25 +132,30 @@
         <!-- Navbar ERP -->
         <nav class="bg-white dark:bg-corp-cardDark border-b border-corp-borderLight dark:border-corp-borderDark sticky top-0 z-40 shadow-sm theme-transition">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <div class="flex items-center justify-center w-8 h-8 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 mr-3">
-                            <i class="fa-solid fa-chart-pie text-corp-primary dark:text-white text-sm"></i>
+                <div class="flex justify-between h-16 items-center overflow-x-auto">
+                    <div class="flex items-center flex-shrink-0 mr-4">
+                        <div class="flex items-center justify-center w-8 h-8 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 mr-3 overflow-hidden">
+                            <img src="logo.png" alt="Logo" class="w-5 h-5 object-contain" onerror="this.src='https://placehold.co/32x32/3f3f46/ffffff?text=L'">
                         </div>
-                        <span class="font-bold text-lg tracking-wide text-slate-900 dark:text-white uppercase">Marques<span class="text-corp-primary dark:text-zinc-400">Contábil</span></span>
+                        <span class="font-bold text-lg tracking-wide text-slate-900 dark:text-white uppercase hidden sm:block">Marques<span class="text-corp-primary dark:text-zinc-400">Contábil</span></span>
                     </div>
-                    <div class="flex items-center space-x-1 sm:space-x-4">
-                        <button onclick="mudarAba('financeiro')" id="btn-financeiro" class="aba-btn active flex items-center px-3 py-5 text-sm font-medium transition-all text-corp-primary border-b-2 border-corp-primary">
+                    <div class="flex items-center space-x-1 sm:space-x-4 flex-nowrap">
+                        <button onclick="mudarAba('financeiro')" id="btn-financeiro" class="aba-btn active flex items-center px-3 py-5 text-sm font-medium transition-all text-corp-primary border-b-2 border-corp-primary whitespace-nowrap">
                             <i class="fa-solid fa-calculator sm:mr-2"></i><span class="hidden sm:inline">Fluxo de Caixa</span>
                         </button>
-                        <button onclick="mudarAba('assinantes')" id="btn-assinantes" class="aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent">
+                        <button onclick="mudarAba('assinantes')" id="btn-assinantes" class="aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent whitespace-nowrap">
                             <i class="fa-solid fa-users sm:mr-2"></i><span class="hidden sm:inline">Assinantes</span>
                         </button>
-                        <button onclick="mudarAba('planos')" id="btn-planos" class="aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent">
+                        <button onclick="mudarAba('planos')" id="btn-planos" class="aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent whitespace-nowrap">
                             <i class="fa-solid fa-box-archive sm:mr-2"></i><span class="hidden sm:inline">Planos</span>
                         </button>
                         
-                        <div class="pl-4 border-l border-slate-200 dark:border-slate-700 flex items-center space-x-2">
+                        <!-- ABA DE USUÁRIOS (Apenas Admin) -->
+                        <button onclick="mudarAba('usuarios')" id="btn-usuarios" class="aba-btn hidden flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent whitespace-nowrap">
+                            <i class="fa-solid fa-user-shield sm:mr-2 text-amber-500"></i><span class="hidden sm:inline">Equipe</span>
+                        </button>
+                        
+                        <div class="pl-4 border-l border-slate-200 dark:border-slate-700 flex items-center space-x-2 flex-shrink-0">
                             <button onclick="toggleTheme()" class="w-9 h-9 rounded-md flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors" title="Mudar Tema">
                                 <i id="theme-icon" class="fa-solid fa-sun"></i>
                             </button>
@@ -237,9 +251,6 @@
                                 <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center">
                                     <i class="fa-solid fa-table-list text-corp-primary mr-2"></i> Livro Razão (Lançamentos)
                                 </h2>
-                                <button onclick="confirmarLimparHistorico()" class="text-xs font-medium text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 transition-colors flex items-center bg-rose-50 dark:bg-rose-500/10 px-2.5 py-1.5 rounded">
-                                    <i class="fa-solid fa-trash-can mr-1.5"></i> Limpar Histórico
-                                </button>
                             </div>
                             
                             <div class="flex-1 overflow-x-auto">
@@ -413,11 +424,40 @@
                 </div>
             </div>
 
+            <!-- ============================================== -->
+            <!-- ABA: USUÁRIOS (SÓ ADMIN) -->
+            <!-- ============================================== -->
+            <div id="aba-usuarios" class="hidden animate-fade-in">
+                <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full flex flex-col theme-transition overflow-hidden">
+                    <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center">
+                            <i class="fa-solid fa-users-gear text-amber-500 mr-2"></i> Gerenciar Equipe
+                        </h2>
+                    </div>
+                    
+                    <div class="flex-1 overflow-x-auto p-4">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                                    <th class="py-3 px-4 font-semibold">E-mail</th>
+                                    <th class="py-3 px-4 font-semibold">Status</th>
+                                    <th class="py-3 px-4 font-semibold">Permissão</th>
+                                    <th class="py-3 px-4 font-semibold text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-usuarios" class="text-sm divide-y divide-slate-100 dark:divide-slate-800/50">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
     <!-- Modal Customizado (Avisos/Confirmações) -->
-    <div id="custom-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity">
+    <div id="custom-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity">
         <div class="bg-white dark:bg-corp-cardDark border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform" id="modal-content">
             <div class="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-4 mx-auto border border-slate-200 dark:border-slate-700" id="modal-icon-container">
                 <i id="modal-icon" class="fa-solid fa-triangle-exclamation text-xl"></i>
@@ -426,7 +466,7 @@
             <p class="text-slate-600 dark:text-slate-400 text-center mb-6 text-sm" id="modal-message">Tem certeza?</p>
             
             <div class="flex space-x-3">
-                <button id="modal-btn-cancel" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded text-sm font-medium transition-colors border border-slate-200 dark:border-slate-700">
+                <button id="modal-btn-cancel" onclick="fecharModal()" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded text-sm font-medium transition-colors border border-slate-200 dark:border-slate-700">
                     Cancelar
                 </button>
                 <button id="modal-btn-confirm" class="flex-1 bg-corp-primary hover:bg-corp-primaryHover text-white px-4 py-2.5 rounded text-sm font-medium transition-colors shadow-sm">
@@ -436,131 +476,239 @@
         </div>
     </div>
 
-    <script>
-        // --- ESTADO (In-Memory para a sessão atual) ---
-        // Seguindo as instruções: "Default to In-Memory State... do NOT use Firestore by default" e "NEVER use localStorage".
-        let isLoggedIn = false;
-        
+    <!-- FIREBASE MODULE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuração Firebase (Mescla Config do Usuário com Regras do Canvas caso exista)
+        const isCanvas = typeof __firebase_config !== 'undefined';
+        const firebaseConfig = isCanvas ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyDXZFgyzZx9rnooh9JtP_4yosCufCKMjsc",
+            authDomain: "adrielbarber-49939.firebaseapp.com",
+            databaseURL: "https://adrielbarber-49939-default-rtdb.firebaseio.com",
+            projectId: "adrielbarber-49939",
+            storageBucket: "adrielbarber-49939.firebasestorage.app",
+            messagingSenderId: "1058537533714",
+            appId: "1:1058537533714:web:9d534ead9797a4e53783cb",
+            measurementId: "G-LHKD9K08K9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Helper para coleções dinâmicas (Permite rodar no Canvas e no Hospedagem própria)
+        const getColRef = (colName) => {
+            if (isCanvas) {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'barber-default';
+                return collection(db, 'artifacts', appId, 'public', 'data', colName);
+            }
+            return collection(db, colName); // Usa coleções raiz na hospedagem própria
+        };
+
+        // Estado Local (Espelho do BD)
+        let currentUserDoc = null;
         let transacoes = [];
         let assinantes = [];
-        let planos = [
-            { id: '1', nome: 'Mensal Básico', valor: 50.00, limiteCortes: 2, ilimitado: false },
-            { id: '2', nome: 'VIP Ilimitado', valor: 90.00, limiteCortes: 0, ilimitado: true }
-        ];
+        let planos = [];
+        let usuariosCadastrados = [];
+        let listeners = [];
+        let isLoginMode = true;
 
-        // --- SISTEMA DE LOGIN ---
-        function realizarLogin(event) {
-            event.preventDefault();
-            const user = document.getElementById('login-user').value;
-            const pass = document.getElementById('login-pass').value;
-            const errorEl = document.getElementById('login-error');
+        // ==========================================
+        // SISTEMA DE AUTENTICAÇÃO E ADMINISTRAÇÃO
+        // ==========================================
+        
+        window.toggleAuthMode = () => {
+            isLoginMode = !isLoginMode;
+            const btnSubmit = document.getElementById('btn-submit-auth');
+            const btnToggle = document.getElementById('btn-toggle-auth');
+            const subTitle = document.getElementById('login-subtitle');
+            
+            document.getElementById('auth-error').classList.add('hidden');
 
-            // Credenciais fixas de demonstração para a UI gate
-            if (user === 'admin' && pass === 'admin') {
-                isLoggedIn = true;
-                errorEl.classList.add('hidden');
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('app-screen').classList.remove('hidden');
-                document.getElementById('app-screen').classList.add('flex');
-                
-                // Inicializa dados na UI
-                iniciarApp();
+            if(isLoginMode) {
+                btnSubmit.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i> Acessar Sistema';
+                btnToggle.textContent = 'Não possui conta? Criar agora';
+                subTitle.textContent = 'Gestão Financeira e Assinantes';
             } else {
-                errorEl.classList.remove('hidden');
+                btnSubmit.innerHTML = '<i class="fa-solid fa-user-plus mr-2"></i> Criar Nova Conta';
+                btnToggle.textContent = 'Já tenho conta. Fazer login';
+                subTitle.textContent = 'Crie sua conta para acessar';
             }
-        }
+        };
 
-        function sair() {
-            mostrarModal("Encerrar Sessão", "Atenção: Como não há banco em nuvem ativo nesta versão base, os dados não salvos podem ser perdidos. Deseja sair?", "fa-power-off text-rose-500", "Sair", "bg-rose-600 hover:bg-rose-700", () => {
-                window.location.reload();
-            });
-        }
+        window.handleAuth = async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+            const errorEl = document.getElementById('auth-error');
+            const errorMsg = document.getElementById('auth-error-msg');
+            
+            errorEl.classList.add('hidden');
+            const btn = document.getElementById('btn-submit-auth');
+            const oldHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processando...';
+            btn.disabled = true;
 
-        // --- INICIALIZAÇÃO ---
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                } else {
+                    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+                    
+                    // Verifica se é o primeiro usuário para dar Admin automático
+                    const usuariosRef = getColRef('usuarios');
+                    const snap = await getDocs(usuariosRef);
+                    const isFirstUser = snap.empty;
+
+                    await setDoc(doc(usuariosRef, userCred.user.uid), {
+                        email: email,
+                        approved: isFirstUser, // Aprova automaticamente se for o primeiro
+                        isAdmin: isFirstUser, // Torna Admin automaticamente se for o primeiro
+                        createdAt: new Date().toISOString()
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                errorEl.classList.remove('hidden');
+                if(error.code === 'auth/email-already-in-use') errorMsg.textContent = 'E-mail já cadastrado.';
+                else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') errorMsg.textContent = 'E-mail ou senha incorretos.';
+                else if(error.code === 'auth/weak-password') errorMsg.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+                else errorMsg.textContent = 'Erro na autenticação. Tente novamente.';
+                
+                btn.innerHTML = oldHtml;
+                btn.disabled = false;
+            }
+        };
+
+        window.sair = () => {
+            signOut(auth);
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            const loginScreen = document.getElementById('login-screen');
+            const appScreen = document.getElementById('app-screen');
+            const waitScreen = document.getElementById('waiting-screen');
+            const btnSubmit = document.getElementById('btn-submit-auth');
+
+            // Reset UI auth button
+            btnSubmit.innerHTML = isLoginMode ? '<i class="fa-solid fa-right-to-bracket mr-2"></i> Acessar Sistema' : '<i class="fa-solid fa-user-plus mr-2"></i> Criar Nova Conta';
+            btnSubmit.disabled = false;
+
+            if (user) {
+                // Fetch User Doc
+                const userRef = doc(getColRef('usuarios'), user.uid);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    currentUserDoc = { id: user.uid, ...userSnap.data() };
+                } else {
+                    // Fallback se doc não existe
+                    currentUserDoc = { id: user.uid, email: user.email, approved: false, isAdmin: false };
+                }
+
+                if (currentUserDoc.approved) {
+                    // Usuário aprovado -> Carrega Sistema
+                    loginScreen.classList.add('hidden');
+                    waitScreen.classList.add('hidden');
+                    waitScreen.classList.remove('flex');
+                    appScreen.classList.remove('hidden');
+                    appScreen.classList.add('flex');
+                    
+                    if(currentUserDoc.isAdmin) {
+                        document.getElementById('btn-usuarios').classList.remove('hidden');
+                        document.getElementById('btn-usuarios').classList.add('flex');
+                    }
+                    
+                    iniciarApp();
+                } else {
+                    // Aguardando aprovação
+                    loginScreen.classList.add('hidden');
+                    appScreen.classList.add('hidden');
+                    appScreen.classList.remove('flex');
+                    waitScreen.classList.remove('hidden');
+                    waitScreen.classList.add('flex');
+                }
+            } else {
+                // Deslogado
+                currentUserDoc = null;
+                limparListeners();
+                appScreen.classList.add('hidden');
+                appScreen.classList.remove('flex');
+                waitScreen.classList.add('hidden');
+                waitScreen.classList.remove('flex');
+                loginScreen.classList.remove('hidden');
+            }
+        });
+
+        // ==========================================
+        // FUNÇÕES DO BANCO DE DADOS E UI
+        // ==========================================
+
         function iniciarApp() {
-            // Aplicar tema salvo ou preferência
+            // Aplicar tema
             const html = document.documentElement;
             if (!html.classList.contains('dark')) {
                 document.getElementById('theme-icon').classList.replace('fa-sun', 'fa-moon');
             }
 
-            // Correção: Garante que a data preenchida obedeça o fuso horário local corretamente (evita bug de meia-noite)
+            // Setar data hoje
             const now = new Date();
             const ano = now.getFullYear();
             const mes = String(now.getMonth() + 1).padStart(2, '0');
             const dia = String(now.getDate()).padStart(2, '0');
             document.getElementById('data-transacao').value = `${ano}-${mes}-${dia}`;
-            
-            renderizarPlanos();
-            atualizarSelectPlanos();
-            renderizarTransacoes();
-            renderizarAssinantes();
-            calcularTotais();
+
+            iniciarListeners();
         }
 
-        // --- THEME TOGGLE ---
-        function toggleTheme() {
-            const html = document.documentElement;
-            const icon = document.getElementById('theme-icon');
-            
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                icon.classList.replace('fa-sun', 'fa-moon');
-            } else {
-                html.classList.add('dark');
-                icon.classList.replace('fa-moon', 'fa-sun');
+        function limparListeners() {
+            listeners.forEach(unsub => unsub());
+            listeners = [];
+        }
+
+        function iniciarListeners() {
+            limparListeners();
+
+            // PLANOS
+            listeners.push(onSnapshot(getColRef('planos'), (snap) => {
+                planos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderizarPlanos();
+                atualizarSelectPlanos();
+                renderizarAssinantes(); // Re-render assinantes pois dependem do nome do plano
+            }));
+
+            // ASSINANTES
+            listeners.push(onSnapshot(getColRef('assinantes'), (snap) => {
+                assinantes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                // Ordenar por nome localmente (evita necessidade de índices complexos no Firebase)
+                assinantes.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+                renderizarAssinantes();
+            }));
+
+            // TRANSAÇÕES
+            listeners.push(onSnapshot(getColRef('transacoes'), (snap) => {
+                transacoes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                // Ordenar decrescente por data/timestamp localmente
+                transacoes.sort((a, b) => new Date(b.createdAt || b.data) - new Date(a.createdAt || a.data));
+                renderizarTransacoes();
+                calcularTotais();
+            }));
+
+            // USUÁRIOS (SÓ ADMIN)
+            if(currentUserDoc?.isAdmin) {
+                listeners.push(onSnapshot(getColRef('usuarios'), (snap) => {
+                    usuariosCadastrados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    renderizarUsuarios();
+                }));
             }
         }
 
-        // --- NAVEGAÇÃO DE ABAS ---
-        function mudarAba(abaId) {
-            ['financeiro', 'assinantes', 'planos'].forEach(id => {
-                document.getElementById(`aba-${id}`).classList.add('hidden');
-                document.getElementById(`btn-${id}`).className = "aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent";
-            });
-
-            document.getElementById(`aba-${abaId}`).classList.remove('hidden');
-            document.getElementById(`btn-${abaId}`).className = "aba-btn active flex items-center px-3 py-5 text-sm font-medium transition-all text-corp-primary border-b-2 border-corp-primary";
-        }
-
-        // --- MODAL CUSTOMIZADO ---
-        let modalConfirmAction = null;
-        function mostrarModal(titulo, mensagem, iconeClass, confirmBtnText, confirmColor, action) {
-            const modal = document.getElementById('custom-modal');
-            document.getElementById('modal-title').textContent = titulo;
-            document.getElementById('modal-message').textContent = mensagem;
-            
-            const iconEl = document.getElementById('modal-icon');
-            iconEl.className = `fa-solid ${iconeClass}`;
-            
-            const btnConfirm = document.getElementById('modal-btn-confirm');
-            btnConfirm.textContent = confirmBtnText;
-            // Reseta e aplica classes de cor
-            btnConfirm.className = `flex-1 text-white px-4 py-2.5 rounded text-sm font-medium transition-colors shadow-sm ${confirmColor}`;
-            
-            modalConfirmAction = action;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => document.getElementById('modal-content').classList.remove('scale-95'), 10);
-        }
-
-        function fecharModal() {
-            document.getElementById('modal-content').classList.add('scale-95');
-            setTimeout(() => {
-                document.getElementById('custom-modal').classList.add('hidden');
-                document.getElementById('custom-modal').classList.remove('flex');
-                modalConfirmAction = null;
-            }, 200);
-        }
-
-        document.getElementById('modal-btn-cancel').addEventListener('click', fecharModal);
-        document.getElementById('modal-btn-confirm').addEventListener('click', () => {
-            if (modalConfirmAction) modalConfirmAction();
-            fecharModal();
-        });
-
-        //        // --- GESTÃO FINANCEIRA ---
-        function salvarTransacao(event) {
+        // --- GESTÃO FINANCEIRA ---
+        window.salvarTransacao = async (event) => {
             event.preventDefault();
             const tipo = document.querySelector('input[name="tipo_transacao"]:checked').value;
             const desc = document.getElementById('desc-transacao').value.trim();
@@ -569,47 +717,44 @@
 
             if(!desc || isNaN(valor)) return;
 
-            transacoes.unshift({ id: Date.now().toString(), tipo, descricao: desc, valor, data });
-            
-            document.getElementById('desc-transacao').value = '';
-            document.getElementById('valor-transacao').value = '';
-            renderizarTransacoes();
-            calcularTotais();
-            
-            // Retorna feedback visual sutil
-            const btn = event.target.querySelector('button');
+            const btn = event.target.querySelector('button[type="submit"]');
             const oldHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-check-double mr-2"></i> Salvo!';
-            btn.classList.replace('bg-corp-primary', 'bg-emerald-600');
-            setTimeout(() => {
-                btn.innerHTML = oldHtml;
-                btn.classList.replace('bg-emerald-600', 'bg-corp-primary');
-            }, 1500);
-        }
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Salvando...';
+            btn.disabled = true;
 
-        function confirmarRemoverTransacao(id) {
-            mostrarModal("Remover Lançamento", "Confirma a exclusão deste registro contábil?", "fa-trash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", () => {
-                transacoes = transacoes.filter(t => t.id !== id);
-                renderizarTransacoes();
-                calcularTotais();
-            });
-        }
+            try {
+                await addDoc(getColRef('transacoes'), {
+                    tipo, descricao: desc, valor, data,
+                    createdAt: new Date().toISOString()
+                });
+                
+                document.getElementById('desc-transacao').value = '';
+                document.getElementById('valor-transacao').value = '';
+                
+                btn.innerHTML = '<i class="fa-solid fa-check-double mr-2"></i> Salvo!';
+                btn.classList.replace('bg-corp-primary', 'bg-emerald-600');
+            } catch(e) {
+                console.error(e);
+                alert("Erro ao salvar lançamento.");
+            } finally {
+                setTimeout(() => {
+                    btn.innerHTML = oldHtml;
+                    btn.classList.replace('bg-emerald-600', 'bg-corp-primary');
+                    btn.disabled = false;
+                }, 1500);
+            }
+        };
 
-        function confirmarLimparHistorico() {
-            if(!transacoes.length) return;
-            mostrarModal("Limpar Razão", "Isso apagará TODO o histórico financeiro da sessão atual.", "fa-triangle-exclamation text-rose-500", "Limpar", "bg-rose-600 hover:bg-rose-700", () => {
-                transacoes = [];
-                renderizarTransacoes();
-                calcularTotais();
+        window.confirmarRemoverTransacao = (id) => {
+            mostrarModal("Remover Lançamento", "Confirma a exclusão deste registro contábil?", "fa-trash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", async () => {
+                await deleteDoc(doc(getColRef('transacoes'), id));
             });
-        }
+        };
 
         function calcularTotais() {
             const hoje = new Date();
             const anoMesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-            
-            let entradasMes = 0;
-            let saidasMes = 0;
+            let entradasMes = 0; let saidasMes = 0;
 
             transacoes.forEach(t => {
                 if (t.data.startsWith(anoMesAtual)) {
@@ -619,17 +764,12 @@
             });
 
             const saldo = entradasMes - saidasMes;
-
             document.getElementById('valor-entradas').textContent = formatarMoeda(entradasMes);
             document.getElementById('valor-saidas').textContent = formatarMoeda(saidasMes);
             
             const elSaldo = document.getElementById('valor-saldo');
             elSaldo.textContent = formatarMoeda(saldo);
-            if(saldo < 0) {
-                elSaldo.className = "text-2xl font-bold text-rose-600 dark:text-rose-400";
-            } else {
-                elSaldo.className = "text-2xl font-bold text-slate-900 dark:text-white";
-            }
+            elSaldo.className = saldo < 0 ? "text-2xl font-bold text-rose-600 dark:text-rose-400" : "text-2xl font-bold text-slate-900 dark:text-white";
         }
 
         function renderizarTransacoes() {
@@ -638,25 +778,24 @@
             tbody.innerHTML = '';
             
             if (!transacoes.length) {
-                empty.classList.remove('hidden'); empty.classList.add('flex');
-                return;
+                empty.classList.remove('hidden'); empty.classList.add('flex'); return;
             } else {
                 empty.classList.add('hidden'); empty.classList.remove('flex');
             }
 
             transacoes.forEach(t => {
                 const isReceita = t.tipo === 'receita';
-                const [ano, mes, dia] = t.data.split('-');
+                const parts = t.data.split('-');
+                const formatData = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : t.data;
                 
                 const tipoBadge = isReceita 
                     ? '<span class="bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 px-2 py-1 rounded text-xs font-medium border border-emerald-200 dark:border-emerald-800">Receita</span>'
                     : '<span class="bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 px-2 py-1 rounded text-xs font-medium border border-rose-200 dark:border-rose-800">Despesa</span>';
-
                 const valorClass = isReceita ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400';
                 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                        <td class="py-3 px-4 text-slate-600 dark:text-slate-400">${dia}/${mes}/${ano}</td>
+                        <td class="py-3 px-4 text-slate-600 dark:text-slate-400">${formatData}</td>
                         <td class="py-3 px-4 text-slate-900 dark:text-slate-200 font-medium">${t.descricao}</td>
                         <td class="py-3 px-4">${tipoBadge}</td>
                         <td class="py-3 px-4 text-right font-semibold ${valorClass}">${isReceita ? '+' : '-'} ${formatarMoeda(t.valor)}</td>
@@ -665,56 +804,52 @@
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             });
         }
 
         // --- GESTÃO DE PLANOS ---
-        function toggleIlimitado() {
+        window.toggleIlimitado = () => {
             const isChecked = document.getElementById('ilimitado-plano').checked;
             const inputLimite = document.getElementById('limite-plano');
             inputLimite.disabled = isChecked;
             if(isChecked) inputLimite.value = '';
-        }
+        };
 
-        function salvarPlano(event) {
+        window.salvarPlano = async (event) => {
             event.preventDefault();
             const nome = document.getElementById('nome-plano').value.trim();
             const valor = parseFloat(document.getElementById('valor-plano').value);
             const ilimitado = document.getElementById('ilimitado-plano').checked;
             
-            // Correção: Impede salvar um plano vazio/quebrado se não for marcado como ilimitado
             let limite = 0;
             if (!ilimitado) {
                 limite = parseInt(document.getElementById('limite-plano').value);
                 if (isNaN(limite) || limite < 1) {
-                    mostrarModal("Atenção", "Por favor, informe a quantidade de cortes ou marque como Ilimitado.", "fa-triangle-exclamation text-amber-500", "OK", "bg-slate-800", null);
+                    mostrarModal("Atenção", "Por favor, informe a quantidade de cortes.", "fa-triangle-exclamation text-amber-500", "OK", "bg-slate-800", null);
                     return;
                 }
             }
 
-            planos.push({ id: Date.now().toString(), nome, valor, limiteCortes: limite, ilimitado });
+            await addDoc(getColRef('planos'), {
+                nome, valor, limiteCortes: limite, ilimitado,
+                createdAt: new Date().toISOString()
+            });
             
             event.target.reset();
             document.getElementById('limite-plano').disabled = false;
-            
-            renderizarPlanos();
-            atualizarSelectPlanos();
-        }
+        };
 
-        function removerPlano(id) {
+        window.removerPlano = (id) => {
             const emUso = assinantes.some(a => a.planoId === id);
             if(emUso) {
-                mostrarModal("Operação Negada", "Há clientes vinculados a este plano. Altere-os antes de excluir.", "fa-circle-xmark text-corp-primary", "Entendi", "bg-slate-800", () => {});
+                mostrarModal("Operação Negada", "Há clientes vinculados a este plano. Altere-os antes de excluir.", "fa-circle-xmark text-corp-primary", "Entendi", "bg-slate-800", null);
                 return;
             }
-            mostrarModal("Excluir Plano", "Remover este plano do portfólio?", "fa-trash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", () => {
-                planos = planos.filter(p => p.id !== id);
-                renderizarPlanos();
-                atualizarSelectPlanos();
+            mostrarModal("Excluir Plano", "Remover este plano do portfólio?", "fa-trash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", async () => {
+                await deleteDoc(doc(getColRef('planos'), id));
             });
-        }
+        };
 
         function renderizarPlanos() {
             const lista = document.getElementById('lista-planos');
@@ -729,8 +864,7 @@
                             <p class="text-xs text-slate-500 mt-2 flex items-center"><i class="fa-solid fa-chart-line mr-1.5 opacity-70"></i> ${detail}</p>
                         </div>
                         <button onclick="removerPlano('${p.id}')" class="text-slate-400 hover:text-rose-500 transition-colors p-1"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
@@ -742,8 +876,8 @@
             });
         }
 
-        // --- GESTÃO DE ASSINANTES E CHECK-IN ---
-        function salvarAssinante(event) {
+        // --- GESTÃO DE ASSINANTES ---
+        window.salvarAssinante = async (event) => {
             event.preventDefault();
             const nome = document.getElementById('nome-assinante').value.trim();
             const tel = document.getElementById('tel-assinante').value.trim();
@@ -752,69 +886,63 @@
 
             if (!nome || !planoId) return;
 
-            assinantes.push({
-                id: Date.now().toString(),
+            const btn = event.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = 'Cadastrando...';
+
+            await addDoc(getColRef('assinantes'), {
                 nome, telefone: tel, planoId, vencimento,
-                status: 'ativo', cortesUsados: 0
+                status: 'ativo', cortesUsados: 0,
+                createdAt: new Date().toISOString()
             });
-            assinantes.sort((a, b) => a.nome.localeCompare(b.nome));
             
             event.target.reset();
-            renderizarAssinantes();
-            
-            // Redireciona sutilmente foco para a lista
+            btn.disabled = false;
+            btn.innerHTML = 'Cadastrar Cliente';
             document.getElementById('tabela-assinantes').scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
+        };
 
-        function alternarStatusAssinante(id) {
+        window.alternarStatusAssinante = async (id) => {
             const ass = assinantes.find(a => a.id === id);
-            if(ass.status === 'ativo') ass.status = 'pendente';
-            else if(ass.status === 'pendente') ass.status = 'inativo';
-            else ass.status = 'ativo';
-            
-            renderizarAssinantes();
-        }
+            let newStatus = 'ativo';
+            if(ass.status === 'ativo') newStatus = 'pendente';
+            else if(ass.status === 'pendente') newStatus = 'inativo';
+            await updateDoc(doc(getColRef('assinantes'), id), { status: newStatus });
+        };
 
-        function realizarCheckin(id) {
+        window.realizarCheckin = async (id) => {
             const ass = assinantes.find(a => a.id === id);
             const plano = planos.find(p => p.id === ass.planoId);
-            
             if(!plano) return;
             
             if(!plano.ilimitado && ass.cortesUsados >= plano.limiteCortes) {
-                mostrarModal("Franquia Esgotada", "Este cliente atingiu o limite de serviços do ciclo atual.", "fa-ban text-rose-500", "Ok", "bg-slate-800", () => {});
+                mostrarModal("Franquia Esgotada", "Limite de serviços do ciclo atingido.", "fa-ban text-rose-500", "Ok", "bg-slate-800", null);
                 return;
             }
-            
-            ass.cortesUsados++;
-            renderizarAssinantes();
-        }
+            await updateDoc(doc(getColRef('assinantes'), id), { cortesUsados: ass.cortesUsados + 1 });
+        };
 
-        function resetarCiclo(id) {
-            const ass = assinantes.find(a => a.id === id);
-            ass.cortesUsados = 0;
-            renderizarAssinantes();
-        }
+        window.resetarCiclo = async (id) => {
+            await updateDoc(doc(getColRef('assinantes'), id), { cortesUsados: 0 });
+        };
 
-        function confirmarRemoverAssinante(id) {
-            mostrarModal("Desligar Cliente", "Remover este assinante da base de dados?", "fa-user-slash text-rose-500", "Remover", "bg-rose-600 hover:bg-rose-700", () => {
-                assinantes = assinantes.filter(a => a.id !== id);
-                renderizarAssinantes();
+        window.confirmarRemoverAssinante = (id) => {
+            mostrarModal("Desligar Cliente", "Remover este assinante da base?", "fa-user-slash text-rose-500", "Remover", "bg-rose-600 hover:bg-rose-700", async () => {
+                await deleteDoc(doc(getColRef('assinantes'), id));
             });
-        }
+        };
 
-        function lancarMensalidade(id) {
+        window.lancarMensalidade = (id) => {
             const ass = assinantes.find(a => a.id === id);
             const plano = planos.find(p => p.id === ass.planoId);
-            
             if(!plano) return;
 
-            mudarAba('financeiro');
+            window.mudarAba('financeiro');
             document.querySelector('input[value="receita"]').checked = true;
             document.getElementById('desc-transacao').value = `Fatura Assinatura - ${ass.nome}`;
             document.getElementById('valor-transacao').value = plano.valor;
             document.getElementById('valor-transacao').focus();
-        }
+        };
 
         function renderizarAssinantes() {
             const tbody = document.getElementById('tabela-assinantes');
@@ -833,9 +961,8 @@
             }
 
             assinantes.forEach(ass => {
-                const plano = planos.find(p => p.id === ass.planoId) || { nome: 'Plano Inválido', ilimitado: true, limiteCortes: 0 };
+                const plano = planos.find(p => p.id === ass.planoId) || { nome: 'Plano Removido', ilimitado: true, limiteCortes: 0 };
                 
-                // Estilo do Status
                 let statusBadge = '';
                 if (ass.status === 'ativo') {
                     statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-xs px-2 py-1 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-medium transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-500/20 w-20">Ativo</button>`;
@@ -858,40 +985,135 @@
                             <div class="font-medium text-slate-900 dark:text-slate-200">${ass.nome}</div>
                             <div class="text-xs text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp opacity-70 mr-1"></i>${ass.telefone || 'Sem contato'}</div>
                         </td>
-                        <td class="py-3 px-4 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                            ${plano.nome}
-                        </td>
+                        <td class="py-3 px-4 text-slate-600 dark:text-slate-300 text-sm font-medium">${plano.nome}</td>
                         <td class="py-3 px-4">
                             <div class="flex flex-col space-y-1">
                                 ${progressoCortes}
                                 <button onclick="resetarCiclo('${ass.id}')" class="text-[10px] text-corp-primary hover:underline self-start">Renovar Ciclo</button>
                             </div>
                         </td>
-                        <td class="py-3 px-4 text-slate-600 dark:text-slate-300 text-sm">
-                            Dia ${ass.vencimento}
-                        </td>
-                        <td class="py-3 px-4">
-                            ${statusBadge}
-                        </td>
+                        <td class="py-3 px-4 text-slate-600 dark:text-slate-300 text-sm">Dia ${ass.vencimento}</td>
+                        <td class="py-3 px-4">${statusBadge}</td>
                         <td class="py-3 px-4">
                             <div class="flex justify-center space-x-2">
-                                <button onclick="realizarCheckin('${ass.id}')" ${limiteExcedido || ass.status === 'inativo' ? 'disabled' : ''} class="w-8 h-8 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors disabled:opacity-30 flex items-center justify-center" title="Registrar Check-in">
-                                    <i class="fa-solid fa-check"></i>
-                                </button>
-                                <button onclick="lancarMensalidade('${ass.id}')" class="w-8 h-8 rounded bg-corp-primary/10 hover:bg-corp-primary/20 text-corp-primary transition-colors flex items-center justify-center" title="Lançar Fatura">
-                                    <i class="fa-solid fa-file-invoice-dollar"></i>
-                                </button>
-                                <button onclick="confirmarRemoverAssinante('${ass.id}')" class="w-8 h-8 rounded bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-500 transition-colors flex items-center justify-center" title="Excluir">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
+                                <button onclick="realizarCheckin('${ass.id}')" ${limiteExcedido || ass.status === 'inativo' ? 'disabled' : ''} class="w-8 h-8 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors disabled:opacity-30 flex items-center justify-center"><i class="fa-solid fa-check"></i></button>
+                                <button onclick="lancarMensalidade('${ass.id}')" class="w-8 h-8 rounded bg-corp-primary/10 hover:bg-corp-primary/20 text-corp-primary transition-colors flex items-center justify-center"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+                                <button onclick="confirmarRemoverAssinante('${ass.id}')" class="w-8 h-8 rounded bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-500 transition-colors flex items-center justify-center"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             });
         }
 
-        // --- UTILS ---
+        // --- GESTÃO DE USUÁRIOS (ADMIN) ---
+        window.alterarStatusUsuario = async (uid, isApproved) => {
+            await updateDoc(doc(getColRef('usuarios'), uid), { approved: isApproved });
+        };
+        window.alterarNivelUsuario = async (uid, isAdmin) => {
+            await updateDoc(doc(getColRef('usuarios'), uid), { isAdmin: isAdmin });
+        };
+
+        function renderizarUsuarios() {
+            const tbody = document.getElementById('tabela-usuarios');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            
+            usuariosCadastrados.forEach(usr => {
+                const isMe = usr.id === currentUserDoc.id;
+                const statusBadge = usr.approved 
+                    ? `<span class="text-xs px-2 py-1 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">Aprovado</span>`
+                    : `<span class="text-xs px-2 py-1 rounded bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200 dark:border-amber-800">Pendente</span>`;
+                    
+                const roleBadge = usr.isAdmin
+                    ? `<span class="text-xs font-bold text-amber-600 dark:text-amber-500"><i class="fa-solid fa-crown mr-1"></i> Admin</span>`
+                    : `<span class="text-xs text-slate-500 dark:text-slate-400">Usuário</span>`;
+
+                const btnAprovar = usr.approved 
+                    ? `<button onclick="alterarStatusUsuario('${usr.id}', false)" ${isMe ? 'disabled' : ''} class="text-xs text-rose-500 hover:underline disabled:opacity-30">Bloquear</button>`
+                    : `<button onclick="alterarStatusUsuario('${usr.id}', true)" class="text-xs text-emerald-500 hover:underline">Aprovar</button>`;
+                
+                const btnAdmin = usr.isAdmin
+                    ? `<button onclick="alterarNivelUsuario('${usr.id}', false)" ${isMe ? 'disabled' : ''} class="text-xs text-slate-500 hover:underline disabled:opacity-30">Remover Admin</button>`
+                    : `<button onclick="alterarNivelUsuario('${usr.id}', true)" class="text-xs text-amber-500 hover:underline">Tornar Admin</button>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                        <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-200">${usr.email} ${isMe ? '<span class="ml-2 text-[10px] text-slate-400">(Você)</span>' : ''}</td>
+                        <td class="py-3 px-4">${statusBadge}</td>
+                        <td class="py-3 px-4">${roleBadge}</td>
+                        <td class="py-3 px-4 text-center space-x-3">
+                            ${btnAprovar}
+                            <span class="text-slate-300 dark:text-slate-700">|</span>
+                            ${btnAdmin}
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        // --- UTILS & NAVEGAÇÃO ---
+        window.mudarAba = (abaId) => {
+            ['financeiro', 'assinantes', 'planos', 'usuarios'].forEach(id => {
+                const elAba = document.getElementById(`aba-${id}`);
+                const elBtn = document.getElementById(`btn-${id}`);
+                if(elAba) elAba.classList.add('hidden');
+                if(elBtn) {
+                    elBtn.classList.remove('active', 'border-corp-primary', 'text-corp-primary');
+                    elBtn.classList.add('text-slate-500', 'border-transparent');
+                }
+            });
+            document.getElementById(`aba-${abaId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-${abaId}`);
+            activeBtn.classList.remove('text-slate-500', 'border-transparent');
+            activeBtn.classList.add('active', 'text-corp-primary', 'border-corp-primary');
+        };
+
+        window.toggleTheme = () => {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                html.classList.add('dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            }
+        };
+
+        let modalConfirmAction = null;
+        window.mostrarModal = (titulo, mensagem, iconeClass, confirmBtnText, confirmColor, action) => {
+            const modal = document.getElementById('custom-modal');
+            document.getElementById('modal-title').textContent = titulo;
+            document.getElementById('modal-message').textContent = mensagem;
+            document.getElementById('modal-icon').className = `fa-solid ${iconeClass}`;
+            
+            const btnConfirm = document.getElementById('modal-btn-confirm');
+            btnConfirm.textContent = confirmBtnText;
+            btnConfirm.className = `flex-1 text-white px-4 py-2.5 rounded text-sm font-medium transition-colors shadow-sm ${confirmColor}`;
+            
+            modalConfirmAction = action;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => document.getElementById('modal-content').classList.remove('scale-95'), 10);
+        };
+
+        window.fecharModal = () => {
+            document.getElementById('modal-content').classList.add('scale-95');
+            setTimeout(() => {
+                document.getElementById('custom-modal').classList.add('hidden');
+                document.getElementById('custom-modal').classList.remove('flex');
+                modalConfirmAction = null;
+            }, 200);
+        };
+
+        document.getElementById('modal-btn-confirm').addEventListener('click', async () => {
+            if (modalConfirmAction) {
+                const btn = document.getElementById('modal-btn-confirm');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                await modalConfirmAction();
+            }
+            window.fecharModal();
+        });
+
         function formatarMoeda(valor) {
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
