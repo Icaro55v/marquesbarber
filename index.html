@@ -2,7 +2,7 @@
 <html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Marques Barber - Contabilidade & Gestão</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -51,21 +51,24 @@
             -webkit-appearance: none; margin: 0; 
         }
         
-        body { transition: background-color 0.3s, color 0.3s; }
+        body { transition: background-color 0.3s, color 0.3s; -webkit-tap-highlight-color: transparent; }
         .theme-transition { transition: all 0.3s ease; }
         th { letter-spacing: 0.05em; text-transform: uppercase; }
+        
+        /* Fix para navegadores mobile (Safary notch/bars) */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col bg-corp-bgLight text-slate-900 dark:bg-corp-bgDark dark:text-slate-100 theme-transition overflow-x-hidden">
 
     <!-- TELA DE LOGIN & REGISTRO -->
-    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-corp-bgDark theme-transition">
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-corp-bgDark theme-transition px-4 sm:px-0">
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 dark:opacity-10 pointer-events-none"></div>
         
-        <div class="w-full max-w-md p-8 bg-white dark:bg-corp-cardDark rounded-2xl shadow-2xl border border-corp-borderLight dark:border-corp-borderDark relative z-10 mx-4">
+        <div class="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-corp-cardDark rounded-2xl shadow-2xl border border-corp-borderLight dark:border-corp-borderDark relative z-10">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-corp-primary dark:text-white mb-4 shadow-sm overflow-hidden">
-                    <img src="logo.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/100x100/3f3f46/ffffff?text=Logo'">
+                <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-zinc-950 border-4 border-corp-primary dark:border-zinc-700 mb-4 shadow-lg overflow-hidden flex-shrink-0">
+                    <img src="image_d2de27.png" alt="Logo Marques Barber" class="w-full h-full object-cover scale-110" onerror="this.src='https://placehold.co/100x100/3f3f46/ffffff?text=Logo'">
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-wider">Marques<span class="text-corp-primary dark:text-zinc-400">Contábil</span></h1>
                 <p class="text-sm text-slate-500 dark:text-slate-400 mt-1" id="login-subtitle">Gestão Financeira e Assinantes</p>
@@ -79,7 +82,7 @@
                             <i class="fa-regular fa-envelope text-slate-400"></i>
                         </div>
                         <input type="email" id="login-email" required placeholder="seu@email.com" 
-                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-4 py-3.5 sm:py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
                     </div>
                 </div>
                 <div class="mb-6">
@@ -89,7 +92,7 @@
                             <i class="fa-solid fa-lock text-slate-400"></i>
                         </div>
                         <input type="password" id="login-pass" required placeholder="••••••••" minlength="6"
-                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pl-10 pr-4 py-3.5 sm:py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none transition-all">
                     </div>
                     <p id="auth-error" class="text-red-500 text-xs mt-2 hidden font-medium"><i class="fa-solid fa-circle-exclamation mr-1"></i> <span id="auth-error-msg">Erro na autenticação.</span></p>
                 </div>
@@ -98,7 +101,7 @@
                 </button>
                 
                 <div class="mt-4 text-center">
-                    <button type="button" onclick="toggleAuthMode()" id="btn-toggle-auth" class="text-sm text-corp-primary dark:text-zinc-400 hover:underline">
+                    <button type="button" onclick="toggleAuthMode()" id="btn-toggle-auth" class="text-sm text-corp-primary dark:text-zinc-400 hover:underline py-2">
                         Não possui conta? Criar agora
                     </button>
                 </div>
@@ -113,8 +116,8 @@
     </div>
 
     <!-- TELA DE AGUARDANDO APROVAÇÃO -->
-    <div id="waiting-screen" class="fixed inset-0 z-50 hidden flex-col items-center justify-center bg-slate-100 dark:bg-corp-bgDark theme-transition">
-        <div class="w-full max-w-md p-8 bg-white dark:bg-corp-cardDark rounded-2xl shadow-2xl border border-corp-borderLight dark:border-corp-borderDark text-center mx-4">
+    <div id="waiting-screen" class="fixed inset-0 z-50 hidden flex-col items-center justify-center bg-slate-100 dark:bg-corp-bgDark theme-transition px-4 sm:px-0">
+        <div class="w-full max-w-md p-8 bg-white dark:bg-corp-cardDark rounded-2xl shadow-2xl border border-corp-borderLight dark:border-corp-borderDark text-center">
             <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-500 mb-6 border border-amber-200 dark:border-amber-800">
                 <i class="fa-solid fa-clock-rotate-left text-3xl"></i>
             </div>
@@ -129,46 +132,73 @@
     <!-- SISTEMA PRINCIPAL (Oculto até o login) -->
     <div id="app-screen" class="hidden flex-col min-h-screen">
         
-        <!-- Navbar ERP -->
+        <!-- Navbar Superior ERP (Desktop & Topbar Mobile) -->
         <nav class="bg-white dark:bg-corp-cardDark border-b border-corp-borderLight dark:border-corp-borderDark sticky top-0 z-40 shadow-sm theme-transition">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16 items-center overflow-x-auto">
+                <div class="flex justify-between h-16 items-center">
+                    
+                    <!-- Logo Area -->
                     <div class="flex items-center flex-shrink-0 mr-4">
-                        <div class="flex items-center justify-center w-8 h-8 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 mr-3 overflow-hidden">
-                            <img src="logo.png" alt="Logo" class="w-5 h-5 object-contain" onerror="this.src='https://placehold.co/32x32/3f3f46/ffffff?text=L'">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-950 border-2 border-corp-primary dark:border-zinc-700 mr-3 overflow-hidden flex-shrink-0 shadow-sm">
+                            <img src="image_d2de27.png" alt="Logo Marques Barber" class="w-full h-full object-cover scale-110" onerror="this.src='https://placehold.co/40x40/3f3f46/ffffff?text=MB'">
                         </div>
                         <span class="font-bold text-lg tracking-wide text-slate-900 dark:text-white uppercase hidden sm:block">Marques<span class="text-corp-primary dark:text-zinc-400">Contábil</span></span>
                     </div>
-                    <div class="flex items-center space-x-1 sm:space-x-4 flex-nowrap">
-                        <button onclick="mudarAba('financeiro')" id="btn-financeiro" class="aba-btn active flex items-center px-3 py-5 text-sm font-medium transition-all text-corp-primary border-b-2 border-corp-primary whitespace-nowrap">
-                            <i class="fa-solid fa-calculator sm:mr-2"></i><span class="hidden sm:inline">Fluxo de Caixa</span>
+
+                    <!-- Links Navegação Desktop (Escondido no Mobile) -->
+                    <div class="hidden md:flex items-center space-x-1 sm:space-x-4 flex-1 justify-center">
+                        <button onclick="mudarAba('financeiro')" data-target="financeiro" class="aba-btn active flex items-center px-4 py-5 text-sm font-medium transition-all text-corp-primary border-b-2 border-corp-primary whitespace-nowrap">
+                            <i class="fa-solid fa-calculator mr-2"></i> Caixa
                         </button>
-                        <button onclick="mudarAba('assinantes')" id="btn-assinantes" class="aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent whitespace-nowrap">
-                            <i class="fa-solid fa-users sm:mr-2"></i><span class="hidden sm:inline">Assinantes</span>
+                        <button onclick="mudarAba('assinantes')" data-target="assinantes" class="aba-btn flex items-center px-4 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent whitespace-nowrap">
+                            <i class="fa-solid fa-users mr-2"></i> Assinantes
                         </button>
-                        <button onclick="mudarAba('planos')" id="btn-planos" class="aba-btn flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent whitespace-nowrap">
-                            <i class="fa-solid fa-box-archive sm:mr-2"></i><span class="hidden sm:inline">Planos</span>
+                        <button onclick="mudarAba('planos')" data-target="planos" class="aba-btn flex items-center px-4 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent whitespace-nowrap">
+                            <i class="fa-solid fa-box-archive mr-2"></i> Planos
                         </button>
-                        
-                        <!-- ABA DE USUÁRIOS (Apenas Admin) -->
-                        <button onclick="mudarAba('usuarios')" id="btn-usuarios" class="aba-btn hidden flex items-center px-3 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent whitespace-nowrap">
-                            <i class="fa-solid fa-user-shield sm:mr-2 text-amber-500"></i><span class="hidden sm:inline">Equipe</span>
+                        <button onclick="mudarAba('usuarios')" id="btn-usuarios-desktop" data-target="usuarios" class="aba-btn hidden flex items-center px-4 py-5 text-sm font-medium transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent whitespace-nowrap">
+                            <i class="fa-solid fa-user-shield mr-2 text-amber-500"></i> Equipe
                         </button>
-                        
-                        <div class="pl-4 border-l border-slate-200 dark:border-slate-700 flex items-center space-x-2 flex-shrink-0">
-                            <button onclick="toggleTheme()" class="w-9 h-9 rounded-md flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors" title="Mudar Tema">
-                                <i id="theme-icon" class="fa-solid fa-sun"></i>
-                            </button>
-                            <button onclick="sair()" class="w-9 h-9 rounded-md flex items-center justify-center text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10 transition-colors" title="Sair">
-                                <i class="fa-solid fa-power-off"></i>
-                            </button>
-                        </div>
                     </div>
+                    
+                    <!-- Botões de Ação (Tema / Logout) -->
+                    <div class="flex items-center space-x-2 flex-shrink-0 md:pl-4 md:border-l border-slate-200 dark:border-slate-700">
+                        <button onclick="toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors" title="Mudar Tema">
+                            <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
+                        </button>
+                        <button onclick="sair()" class="w-10 h-10 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10 transition-colors" title="Sair">
+                            <i class="fa-solid fa-power-off text-lg"></i>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </nav>
 
-        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <!-- Navbar Inferior Mobile (Menu App) -->
+        <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-corp-cardDark border-t border-corp-borderLight dark:border-corp-borderDark z-40 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <div class="flex justify-around items-center h-16 px-2">
+                <button onclick="mudarAba('financeiro')" data-target="financeiro" class="aba-btn mobile-btn flex flex-col items-center justify-center w-full h-full text-corp-primary dark:text-white transition-colors">
+                    <i class="fa-solid fa-calculator text-lg mb-1"></i>
+                    <span class="text-[10px] font-medium uppercase tracking-wider">Caixa</span>
+                </button>
+                <button onclick="mudarAba('assinantes')" data-target="assinantes" class="aba-btn mobile-btn flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                    <i class="fa-solid fa-users text-lg mb-1"></i>
+                    <span class="text-[10px] font-medium uppercase tracking-wider">Assinantes</span>
+                </button>
+                <button onclick="mudarAba('planos')" data-target="planos" class="aba-btn mobile-btn flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                    <i class="fa-solid fa-box-archive text-lg mb-1"></i>
+                    <span class="text-[10px] font-medium uppercase tracking-wider">Planos</span>
+                </button>
+                <button onclick="mudarAba('usuarios')" id="btn-usuarios-mobile" data-target="usuarios" class="aba-btn mobile-btn hidden flex-col items-center justify-center w-full h-full text-slate-400 hover:text-amber-500 transition-colors">
+                    <i class="fa-solid fa-user-shield text-lg mb-1"></i>
+                    <span class="text-[10px] font-medium uppercase tracking-wider">Equipe</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Container Principal - Padding inferior extra para mobile -->
+        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-8 w-full">
 
             <!-- ============================================== -->
             <!-- ABA: FLUXO DE CAIXA -->
@@ -176,92 +206,94 @@
             <div id="aba-financeiro" class="block animate-fade-in">
                 
                 <!-- Cards ERP (Resumo) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div class="bg-white dark:bg-corp-cardDark rounded-lg border border-corp-borderLight dark:border-corp-borderDark p-5 shadow-sm theme-transition">
-                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Receitas (Mês)</p>
-                        <h3 class="text-2xl font-bold text-emerald-600 dark:text-emerald-400" id="valor-entradas">R$ 0,00</h3>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                    <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-4 sm:p-5 shadow-sm theme-transition flex flex-col justify-center">
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1 line-clamp-1">Receitas Mês</p>
+                        <h3 class="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400" id="valor-entradas">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white dark:bg-corp-cardDark rounded-lg border border-corp-borderLight dark:border-corp-borderDark p-5 shadow-sm theme-transition">
-                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Despesas (Mês)</p>
-                        <h3 class="text-2xl font-bold text-rose-600 dark:text-rose-400" id="valor-saidas">R$ 0,00</h3>
+                    <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-4 sm:p-5 shadow-sm theme-transition flex flex-col justify-center">
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1 line-clamp-1">Despesas Mês</p>
+                        <h3 class="text-lg sm:text-2xl font-bold text-rose-600 dark:text-rose-400" id="valor-saidas">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white dark:bg-corp-cardDark rounded-lg border border-corp-borderLight dark:border-corp-borderDark p-5 shadow-sm theme-transition border-l-4 border-l-corp-primary dark:border-l-corp-primary">
-                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Lucro (Mês)</p>
+                    <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-4 sm:p-5 shadow-sm theme-transition border-l-4 border-l-corp-primary dark:border-l-corp-primary flex flex-col justify-center col-span-2 sm:col-span-1">
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1 line-clamp-1">Lucro Líquido</p>
                         <h3 class="text-2xl font-bold text-slate-900 dark:text-white" id="valor-saldo">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white dark:bg-corp-cardDark rounded-lg border border-corp-borderLight dark:border-corp-borderDark p-5 shadow-sm theme-transition">
-                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Assinantes Ativos</p>
+                    <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-4 sm:p-5 shadow-sm theme-transition flex flex-col justify-center hidden sm:flex">
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1 line-clamp-1">Assinantes Ativos</p>
                         <h3 class="text-2xl font-bold text-zinc-600 dark:text-zinc-300" id="valor-ativos">0</h3>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Form Lançamento -->
-                    <div class="lg:col-span-1">
-                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-6 shadow-sm theme-transition">
+                    <div class="lg:col-span-1 order-2 lg:order-1">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-5 sm:p-6 shadow-sm theme-transition">
                             <h2 class="text-base font-bold text-slate-900 dark:text-white mb-5 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center">
                                 <i class="fa-solid fa-plus-minus text-corp-primary mr-2"></i> Novo Lançamento
                             </h2>
                             
                             <form id="form-transacao" onsubmit="salvarTransacao(event)">
-                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                <div class="grid grid-cols-2 gap-3 mb-5">
                                     <label class="cursor-pointer">
                                         <input type="radio" name="tipo_transacao" value="receita" checked class="peer sr-only">
-                                        <div class="text-center py-2 px-3 rounded border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-500/10 peer-checked:text-emerald-600 dark:peer-checked:text-emerald-400 peer-checked:border-emerald-500 transition-all text-sm font-medium">
+                                        <div class="text-center py-2.5 px-3 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-500/10 peer-checked:text-emerald-600 dark:peer-checked:text-emerald-400 peer-checked:border-emerald-500 transition-all text-sm font-medium">
                                             Receita (+)
                                         </div>
                                     </label>
                                     <label class="cursor-pointer">
                                         <input type="radio" name="tipo_transacao" value="despesa" class="peer sr-only">
-                                        <div class="text-center py-2 px-3 rounded border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 peer-checked:bg-rose-50 dark:peer-checked:bg-rose-500/10 peer-checked:text-rose-600 dark:peer-checked:text-rose-400 peer-checked:border-rose-500 transition-all text-sm font-medium">
+                                        <div class="text-center py-2.5 px-3 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 peer-checked:bg-rose-50 dark:peer-checked:bg-rose-500/10 peer-checked:text-rose-600 dark:peer-checked:text-rose-400 peer-checked:border-rose-500 transition-all text-sm font-medium">
                                             Despesa (-)
                                         </div>
                                     </label>
                                 </div>
 
-                                <div class="mb-4">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Descrição</label>
-                                    <input type="text" id="desc-transacao" required placeholder="Ex: Mensalidade, Produtos, Luz..." 
-                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Descrição</label>
+                                        <input type="text" id="desc-transacao" required placeholder="Ex: Mensalidade, Produtos, Luz..." 
+                                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none text-sm transition-all">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Valor (R$)</label>
+                                        <input type="number" id="valor-transacao" required min="0.01" step="0.01" placeholder="0.00" 
+                                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none text-sm transition-all">
+                                    </div>
+
+                                    <div class="mb-6">
+                                        <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Data Referência</label>
+                                        <input type="date" id="data-transacao" required 
+                                            class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none text-sm transition-all [color-scheme:light] dark:[color-scheme:dark]">
+                                    </div>
                                 </div>
 
-                                <div class="mb-4">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Valor (R$)</label>
-                                    <input type="number" id="valor-transacao" required min="0.01" step="0.01" placeholder="0.00" 
-                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
-                                </div>
-
-                                <div class="mb-6">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Data Referência</label>
-                                    <input type="date" id="data-transacao" required 
-                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all [color-scheme:light] dark:[color-scheme:dark]">
-                                </div>
-
-                                <button type="submit" class="w-full bg-corp-primary hover:bg-corp-primaryHover text-white font-medium py-2.5 rounded transition-all text-sm shadow-sm flex justify-center items-center">
-                                    <i class="fa-solid fa-check mr-2"></i> Registrar Lançamento
+                                <button type="submit" class="w-full mt-2 bg-corp-primary hover:bg-corp-primaryHover text-white font-medium py-3.5 rounded-lg transition-all text-sm shadow-sm flex justify-center items-center">
+                                    <i class="fa-solid fa-check mr-2"></i> Lançar no Caixa
                                 </button>
                             </form>
                         </div>
                     </div>
 
                     <!-- Tabela de Histórico -->
-                    <div class="lg:col-span-2">
-                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full flex flex-col theme-transition overflow-hidden">
-                            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <div class="lg:col-span-2 order-1 lg:order-2">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full min-h-[400px] flex flex-col theme-transition overflow-hidden">
+                            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/20">
                                 <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center">
-                                    <i class="fa-solid fa-table-list text-corp-primary mr-2"></i> Livro Razão (Lançamentos)
+                                    <i class="fa-solid fa-table-list text-corp-primary mr-2"></i> Livro Razão
                                 </h2>
                             </div>
                             
-                            <div class="flex-1 overflow-x-auto">
-                                <table class="w-full text-left border-collapse">
+                            <div class="flex-1 overflow-x-auto w-full">
+                                <table class="w-full text-left border-collapse min-w-[500px]">
                                     <thead>
-                                        <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                                        <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                                             <th class="py-3 px-4 font-semibold w-24">Data</th>
                                             <th class="py-3 px-4 font-semibold">Descrição</th>
-                                            <th class="py-3 px-4 font-semibold w-24">Tipo</th>
-                                            <th class="py-3 px-4 font-semibold text-right w-32">Valor</th>
-                                            <th class="py-3 px-4 font-semibold text-center w-16">Ação</th>
+                                            <th class="py-3 px-4 font-semibold text-center hidden sm:table-cell">Tipo</th>
+                                            <th class="py-3 px-4 font-semibold text-right">Valor</th>
+                                            <th class="py-3 px-4 font-semibold text-center w-12"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabela-transacoes" class="text-sm divide-y divide-slate-100 dark:divide-slate-800/50">
@@ -271,8 +303,8 @@
                                 
                                 <!-- Empty State -->
                                 <div id="empty-state-transacoes" class="hidden flex-col items-center justify-center py-16 text-center">
-                                    <i class="fa-solid fa-file-invoice-dollar text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
-                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Nenhum lançamento contábil encontrado.</p>
+                                    <i class="fa-solid fa-file-invoice-dollar text-5xl text-slate-200 dark:text-slate-800 mb-4"></i>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Nenhum lançamento no momento.</p>
                                 </div>
                             </div>
                         </div>
@@ -288,39 +320,39 @@
                     
                     <!-- Cadastro -->
                     <div class="lg:col-span-1">
-                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-6 shadow-sm theme-transition sticky top-24">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-5 sm:p-6 shadow-sm theme-transition sticky top-24">
                             <h2 class="text-base font-bold text-slate-900 dark:text-white mb-5 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center">
-                                <i class="fa-solid fa-user-plus text-corp-primary mr-2"></i> Novo Assinante
+                                <i class="fa-solid fa-user-plus text-corp-primary mr-2"></i> Cadastrar Assinante
                             </h2>
                             
-                            <form id="form-assinante" onsubmit="salvarAssinante(event)">
-                                <div class="mb-4">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Nome Completo</label>
+                            <form id="form-assinante" onsubmit="salvarAssinante(event)" class="space-y-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Nome Completo</label>
                                     <input type="text" id="nome-assinante" required placeholder="Nome do cliente" 
-                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none text-sm transition-all">
                                 </div>
 
-                                <div class="mb-4">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Contato / WhatsApp</label>
-                                    <input type="text" id="tel-assinante" placeholder="(00) 00000-0000" 
-                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">WhatsApp</label>
+                                    <input type="tel" id="tel-assinante" placeholder="(00) 00000-0000" 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none text-sm transition-all">
                                 </div>
 
-                                <div class="mb-4">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Plano Vinculado</label>
-                                    <select id="plano-assinante" required class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all cursor-pointer">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Plano</label>
+                                    <select id="plano-assinante" required class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none text-sm transition-all cursor-pointer">
                                         <!-- Preenchido via JS -->
                                     </select>
                                 </div>
 
-                                <div class="mb-6">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Dia do Vencimento</label>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Vencimento (Dia)</label>
                                     <input type="number" id="vencimento-assinante" required min="1" max="31" placeholder="Ex: 10" 
-                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none text-sm transition-all">
                                 </div>
 
-                                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-medium py-2.5 rounded transition-all text-sm shadow-sm">
-                                    Cadastrar Cliente
+                                <button type="submit" class="w-full mt-4 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-medium py-3.5 rounded-lg transition-all text-sm shadow-sm flex items-center justify-center">
+                                    <i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Cliente
                                 </button>
                             </form>
                         </div>
@@ -329,25 +361,25 @@
                     <!-- Tabela Assinantes -->
                     <div class="lg:col-span-3">
                         <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full flex flex-col theme-transition overflow-hidden">
-                            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/20">
                                 <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center">
-                                    <i class="fa-solid fa-address-book text-corp-primary mr-2"></i> Gestão da Carteira
+                                    <i class="fa-solid fa-address-book text-corp-primary mr-2"></i> Carteira de Clientes
                                 </h2>
-                                <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold px-2.5 py-1 rounded border border-slate-200 dark:border-slate-700">
+                                <span class="bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
                                     Total: <span id="total-assinantes-badge" class="text-corp-primary">0</span>
                                 </span>
                             </div>
                             
-                            <div class="flex-1 overflow-x-auto">
-                                <table class="w-full text-left border-collapse min-w-[700px]">
+                            <div class="flex-1 overflow-x-auto w-full">
+                                <table class="w-full text-left border-collapse min-w-[750px]">
                                     <thead>
-                                        <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                                        <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
                                             <th class="py-3 px-4 font-semibold">Cliente</th>
                                             <th class="py-3 px-4 font-semibold">Plano</th>
-                                            <th class="py-3 px-4 font-semibold">Uso (Ciclo)</th>
-                                            <th class="py-3 px-4 font-semibold">Vencimento</th>
+                                            <th class="py-3 px-4 font-semibold">Cortes (Ciclo)</th>
+                                            <th class="py-3 px-4 font-semibold">Vencto.</th>
                                             <th class="py-3 px-4 font-semibold">Status</th>
-                                            <th class="py-3 px-4 font-semibold text-center">Operações</th>
+                                            <th class="py-3 px-4 font-semibold text-center w-32">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabela-assinantes" class="text-sm divide-y divide-slate-100 dark:divide-slate-800/50">
@@ -357,8 +389,8 @@
                                 
                                 <!-- Empty State -->
                                 <div id="empty-state-assinantes" class="hidden flex-col items-center justify-center py-16 text-center">
-                                    <i class="fa-solid fa-users-slash text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
-                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Nenhum cliente na carteira.</p>
+                                    <i class="fa-solid fa-users-slash text-5xl text-slate-200 dark:text-slate-800 mb-4"></i>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Nenhum assinante cadastrado.</p>
                                 </div>
                             </div>
                         </div>
@@ -373,50 +405,50 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
                     <div class="lg:col-span-1">
-                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-6 shadow-sm theme-transition">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark p-5 sm:p-6 shadow-sm theme-transition">
                             <h2 class="text-base font-bold text-slate-900 dark:text-white mb-5 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center">
-                                <i class="fa-solid fa-box text-corp-primary mr-2"></i> Configurar Plano
+                                <i class="fa-solid fa-box text-corp-primary mr-2"></i> Criar Plano
                             </h2>
                             
-                            <form id="form-plano" onsubmit="salvarPlano(event)">
-                                <div class="mb-4">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Nome do Pacote</label>
-                                    <input type="text" id="nome-plano" required placeholder="Ex: Premium" 
-                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                            <form id="form-plano" onsubmit="salvarPlano(event)" class="space-y-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Nome do Pacote</label>
+                                    <input type="text" id="nome-plano" required placeholder="Ex: Mensal Premium" 
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none text-sm transition-all">
                                 </div>
 
-                                <div class="mb-4">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Mensalidade (R$)</label>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Mensalidade (R$)</label>
                                     <input type="number" id="valor-plano" required min="1" step="0.01" placeholder="0.00" 
-                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary focus:border-corp-primary outline-none text-sm transition-all">
+                                        class="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary focus:border-transparent outline-none text-sm transition-all">
                                 </div>
 
-                                <div class="mb-6 border border-slate-200 dark:border-slate-700 rounded p-3 bg-slate-50 dark:bg-slate-950/50">
-                                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-2">Franquia de Cortes / Mês</label>
-                                    <div class="flex items-center space-x-3">
-                                        <input type="number" id="limite-plano" min="1" placeholder="Ex: 4" 
-                                            class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-3 py-2 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-corp-primary outline-none text-sm disabled:opacity-50">
-                                        <label class="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap cursor-pointer">
-                                            <input type="checkbox" id="ilimitado-plano" onchange="toggleIlimitado()" class="rounded text-corp-primary focus:ring-corp-primary bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-600 w-4 h-4">
+                                <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-slate-50 dark:bg-slate-950/50 mt-4">
+                                    <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-3">Franquia de Serviços (Cortes)</label>
+                                    <div class="flex items-center space-x-4">
+                                        <input type="number" id="limite-plano" min="1" placeholder="Qtd." 
+                                            class="w-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-corp-primary outline-none text-sm disabled:opacity-50 text-center transition-all">
+                                        <label class="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap cursor-pointer select-none">
+                                            <input type="checkbox" id="ilimitado-plano" onchange="toggleIlimitado()" class="rounded text-corp-primary focus:ring-corp-primary bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-600 w-5 h-5 transition-all">
                                             <span>Ilimitado</span>
                                         </label>
                                     </div>
                                 </div>
 
-                                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-medium py-2.5 rounded transition-all text-sm shadow-sm">
-                                    Adicionar Plano
+                                <button type="submit" class="w-full mt-6 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-medium py-3.5 rounded-lg transition-all text-sm shadow-sm">
+                                    Salvar Plano
                                 </button>
                             </form>
                         </div>
                     </div>
 
                     <div class="lg:col-span-2">
-                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full flex flex-col p-6 theme-transition">
+                        <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full flex flex-col p-5 sm:p-6 theme-transition bg-slate-50/50 dark:bg-transparent">
                             <h2 class="text-base font-bold text-slate-900 dark:text-white mb-5 flex items-center border-b border-slate-100 dark:border-slate-800 pb-3">
                                 <i class="fa-solid fa-boxes-stacked text-corp-primary mr-2"></i> Portfólio de Planos
                             </h2>
                             
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="lista-planos">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-max" id="lista-planos">
                                 <!-- Preenchido via JS -->
                             </div>
                         </div>
@@ -429,20 +461,20 @@
             <!-- ============================================== -->
             <div id="aba-usuarios" class="hidden animate-fade-in">
                 <div class="bg-white dark:bg-corp-cardDark rounded-xl border border-corp-borderLight dark:border-corp-borderDark shadow-sm h-full flex flex-col theme-transition overflow-hidden">
-                    <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/20">
                         <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center">
                             <i class="fa-solid fa-users-gear text-amber-500 mr-2"></i> Gerenciar Equipe
                         </h2>
                     </div>
                     
-                    <div class="flex-1 overflow-x-auto p-4">
-                        <table class="w-full text-left border-collapse">
+                    <div class="flex-1 overflow-x-auto w-full">
+                        <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
-                                <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
-                                    <th class="py-3 px-4 font-semibold">E-mail</th>
-                                    <th class="py-3 px-4 font-semibold">Status</th>
-                                    <th class="py-3 px-4 font-semibold">Permissão</th>
-                                    <th class="py-3 px-4 font-semibold text-center">Ações</th>
+                                <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                                    <th class="py-3 px-4 font-semibold">E-mail do Usuário</th>
+                                    <th class="py-3 px-4 font-semibold">Status Acesso</th>
+                                    <th class="py-3 px-4 font-semibold">Permissões</th>
+                                    <th class="py-3 px-4 font-semibold text-center">Gestão</th>
                                 </tr>
                             </thead>
                             <tbody id="tabela-usuarios" class="text-sm divide-y divide-slate-100 dark:divide-slate-800/50">
@@ -457,19 +489,19 @@
     </div>
 
     <!-- Modal Customizado (Avisos/Confirmações) -->
-    <div id="custom-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity">
-        <div class="bg-white dark:bg-corp-cardDark border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform" id="modal-content">
-            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-4 mx-auto border border-slate-200 dark:border-slate-700" id="modal-icon-container">
-                <i id="modal-icon" class="fa-solid fa-triangle-exclamation text-xl"></i>
+    <div id="custom-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity px-4">
+        <div class="bg-white dark:bg-corp-cardDark border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl p-6 sm:p-8 max-w-sm w-full transform scale-95 transition-transform" id="modal-content">
+            <div class="flex items-center justify-center w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-5 mx-auto border border-slate-200 dark:border-slate-700 shadow-inner" id="modal-icon-container">
+                <i id="modal-icon" class="fa-solid fa-triangle-exclamation text-2xl"></i>
             </div>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white text-center mb-2" id="modal-title">Atenção</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-center mb-6 text-sm" id="modal-message">Tem certeza?</p>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white text-center mb-2" id="modal-title">Atenção</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-center mb-8 text-sm leading-relaxed" id="modal-message">Tem certeza?</p>
             
-            <div class="flex space-x-3">
-                <button id="modal-btn-cancel" onclick="fecharModal()" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded text-sm font-medium transition-colors border border-slate-200 dark:border-slate-700">
+            <div class="flex space-x-3 sm:space-x-4">
+                <button id="modal-btn-cancel" onclick="fecharModal()" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-3 rounded-xl text-sm font-semibold transition-colors border border-slate-200 dark:border-slate-700">
                     Cancelar
                 </button>
-                <button id="modal-btn-confirm" class="flex-1 bg-corp-primary hover:bg-corp-primaryHover text-white px-4 py-2.5 rounded text-sm font-medium transition-colors shadow-sm">
+                <button id="modal-btn-confirm" class="flex-1 bg-corp-primary hover:bg-corp-primaryHover text-white px-4 py-3 rounded-xl text-sm font-semibold transition-colors shadow-md">
                     Confirmar
                 </button>
             </div>
@@ -482,17 +514,17 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuração Firebase (Mescla Config do Usuário com Regras do Canvas caso exista)
+        // Configuração Firebase Nova
         const isCanvas = typeof __firebase_config !== 'undefined';
         const firebaseConfig = isCanvas ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyDXZFgyzZx9rnooh9JtP_4yosCufCKMjsc",
-            authDomain: "adrielbarber-49939.firebaseapp.com",
-            databaseURL: "https://adrielbarber-49939-default-rtdb.firebaseio.com",
-            projectId: "adrielbarber-49939",
-            storageBucket: "adrielbarber-49939.firebasestorage.app",
-            messagingSenderId: "1058537533714",
-            appId: "1:1058537533714:web:9d534ead9797a4e53783cb",
-            measurementId: "G-LHKD9K08K9"
+            apiKey: "AIzaSyBgn6J5yb2TUlZ_ufsu8v57NAZZFG-aHBE",
+            authDomain: "contabil-b9eb0.firebaseapp.com",
+            databaseURL: "https://contabil-b9eb0-default-rtdb.firebaseio.com",
+            projectId: "contabil-b9eb0",
+            storageBucket: "contabil-b9eb0.firebasestorage.app",
+            messagingSenderId: "72839109479",
+            appId: "1:72839109479:web:c5327ee3e346c3de5bedc2",
+            measurementId: "G-VX70CMPKGR"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -559,7 +591,6 @@
                 } else {
                     const userCred = await createUserWithEmailAndPassword(auth, email, pass);
                     
-                    // Verifica se é o primeiro usuário para dar Admin automático
                     const usuariosRef = getColRef('usuarios');
                     const snap = await getDocs(usuariosRef);
                     const isFirstUser = snap.empty;
@@ -606,7 +637,6 @@
                 if (userSnap.exists()) {
                     currentUserDoc = { id: user.uid, ...userSnap.data() };
                 } else {
-                    // Fallback se doc não existe
                     currentUserDoc = { id: user.uid, email: user.email, approved: false, isAdmin: false };
                 }
 
@@ -619,8 +649,10 @@
                     appScreen.classList.add('flex');
                     
                     if(currentUserDoc.isAdmin) {
-                        document.getElementById('btn-usuarios').classList.remove('hidden');
-                        document.getElementById('btn-usuarios').classList.add('flex');
+                        document.getElementById('btn-usuarios-desktop').classList.remove('hidden');
+                        document.getElementById('btn-usuarios-desktop').classList.add('flex');
+                        document.getElementById('btn-usuarios-mobile').classList.remove('hidden');
+                        document.getElementById('btn-usuarios-mobile').classList.add('flex');
                     }
                     
                     iniciarApp();
@@ -678,13 +710,12 @@
                 planos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderizarPlanos();
                 atualizarSelectPlanos();
-                renderizarAssinantes(); // Re-render assinantes pois dependem do nome do plano
+                renderizarAssinantes(); 
             }));
 
             // ASSINANTES
             listeners.push(onSnapshot(getColRef('assinantes'), (snap) => {
                 assinantes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                // Ordenar por nome localmente (evita necessidade de índices complexos no Firebase)
                 assinantes.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
                 renderizarAssinantes();
             }));
@@ -692,7 +723,6 @@
             // TRANSAÇÕES
             listeners.push(onSnapshot(getColRef('transacoes'), (snap) => {
                 transacoes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                // Ordenar decrescente por data/timestamp localmente
                 transacoes.sort((a, b) => new Date(b.createdAt || b.data) - new Date(a.createdAt || a.data));
                 renderizarTransacoes();
                 calcularTotais();
@@ -719,7 +749,7 @@
 
             const btn = event.target.querySelector('button[type="submit"]');
             const oldHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Salvando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Lançando...';
             btn.disabled = true;
 
             try {
@@ -786,22 +816,23 @@
             transacoes.forEach(t => {
                 const isReceita = t.tipo === 'receita';
                 const parts = t.data.split('-');
-                const formatData = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : t.data;
+                const formatData = parts.length === 3 ? `${parts[2]}/${parts[1]}` : t.data; // Mostra DD/MM para caber melhor
                 
-                const tipoBadge = isReceita 
-                    ? '<span class="bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 px-2 py-1 rounded text-xs font-medium border border-emerald-200 dark:border-emerald-800">Receita</span>'
-                    : '<span class="bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 px-2 py-1 rounded text-xs font-medium border border-rose-200 dark:border-rose-800">Despesa</span>';
+                const tipoIcon = isReceita 
+                    ? '<i class="fa-solid fa-arrow-up text-emerald-500"></i>'
+                    : '<i class="fa-solid fa-arrow-down text-rose-500"></i>';
+                
                 const valorClass = isReceita ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400';
                 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                        <td class="py-3 px-4 text-slate-600 dark:text-slate-400">${formatData}</td>
-                        <td class="py-3 px-4 text-slate-900 dark:text-slate-200 font-medium">${t.descricao}</td>
-                        <td class="py-3 px-4">${tipoBadge}</td>
-                        <td class="py-3 px-4 text-right font-semibold ${valorClass}">${isReceita ? '+' : '-'} ${formatarMoeda(t.valor)}</td>
-                        <td class="py-3 px-4 text-center">
-                            <button onclick="confirmarRemoverTransacao('${t.id}')" class="text-slate-400 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100 p-1">
-                                <i class="fa-solid fa-trash"></i>
+                        <td class="py-3.5 px-4 text-slate-500 font-medium whitespace-nowrap">${formatData}</td>
+                        <td class="py-3.5 px-4 text-slate-900 dark:text-slate-200 font-medium break-words">${t.descricao}</td>
+                        <td class="py-3.5 px-4 text-center hidden sm:table-cell">${tipoIcon}</td>
+                        <td class="py-3.5 px-4 text-right font-bold whitespace-nowrap ${valorClass}">${isReceita ? '+' : '-'} ${formatarMoeda(t.valor).replace('R$','').trim()}</td>
+                        <td class="py-3.5 px-4 text-center">
+                            <button onclick="confirmarRemoverTransacao('${t.id}')" class="w-8 h-8 rounded bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-900/30 text-slate-400 hover:text-rose-500 transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-trash-can text-sm"></i>
                             </button>
                         </td>
                     </tr>`;
@@ -831,6 +862,10 @@
                 }
             }
 
+            const btn = event.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+            btn.disabled = true;
+
             await addDoc(getColRef('planos'), {
                 nome, valor, limiteCortes: limite, ilimitado,
                 createdAt: new Date().toISOString()
@@ -838,6 +873,8 @@
             
             event.target.reset();
             document.getElementById('limite-plano').disabled = false;
+            btn.innerHTML = 'Salvar Plano';
+            btn.disabled = false;
         };
 
         window.removerPlano = (id) => {
@@ -855,15 +892,17 @@
             const lista = document.getElementById('lista-planos');
             lista.innerHTML = '';
             planos.forEach(p => {
-                const detail = p.ilimitado ? 'Franquia Ilimitada' : `Franquia: ${p.limiteCortes} cortes`;
+                const detail = p.ilimitado ? 'Franquia Ilimitada' : `Limite de ${p.limiteCortes} cortes`;
                 lista.innerHTML += `
-                    <div class="border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4 rounded flex justify-between items-start hover:border-corp-primary transition-colors">
-                        <div>
-                            <h4 class="font-bold text-slate-900 dark:text-white">${p.nome}</h4>
-                            <p class="text-corp-primary font-semibold mt-1">${formatarMoeda(p.valor)} <span class="text-xs text-slate-500 font-normal">/mês</span></p>
-                            <p class="text-xs text-slate-500 mt-2 flex items-center"><i class="fa-solid fa-chart-line mr-1.5 opacity-70"></i> ${detail}</p>
+                    <div class="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 p-4 rounded-xl flex flex-col justify-between hover:border-corp-primary transition-all shadow-sm">
+                        <div class="flex justify-between items-start mb-3">
+                            <h4 class="font-bold text-slate-900 dark:text-white line-clamp-1">${p.nome}</h4>
+                            <button onclick="removerPlano('${p.id}')" class="text-slate-400 hover:text-rose-500 transition-colors p-1"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
-                        <button onclick="removerPlano('${p.id}')" class="text-slate-400 hover:text-rose-500 transition-colors p-1"><i class="fa-solid fa-trash"></i></button>
+                        <div>
+                            <p class="text-xl text-corp-primary font-bold">${formatarMoeda(p.valor)} <span class="text-[10px] text-slate-500 font-normal uppercase">/mês</span></p>
+                            <p class="text-xs text-slate-500 mt-2 flex items-center bg-slate-50 dark:bg-slate-900/50 w-fit px-2 py-1 rounded"><i class="fa-solid fa-chart-line mr-1.5 opacity-70"></i> ${detail}</p>
+                        </div>
                     </div>`;
             });
         }
@@ -888,7 +927,7 @@
 
             const btn = event.target.querySelector('button[type="submit"]');
             btn.disabled = true;
-            btn.innerHTML = 'Cadastrando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Salvando...';
 
             await addDoc(getColRef('assinantes'), {
                 nome, telefone: tel, planoId, vencimento,
@@ -898,8 +937,12 @@
             
             event.target.reset();
             btn.disabled = false;
-            btn.innerHTML = 'Cadastrar Cliente';
-            document.getElementById('tabela-assinantes').scrollIntoView({ behavior: 'smooth', block: 'end' });
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Cliente';
+            
+            // Em mobile não scrolamos para baixo pra não desorientar o usuário, no desk é ok
+            if(window.innerWidth > 1024) {
+                document.getElementById('tabela-assinantes').scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }
         };
 
         window.alternarStatusAssinante = async (id) => {
@@ -916,7 +959,7 @@
             if(!plano) return;
             
             if(!plano.ilimitado && ass.cortesUsados >= plano.limiteCortes) {
-                mostrarModal("Franquia Esgotada", "Limite de serviços do ciclo atingido.", "fa-ban text-rose-500", "Ok", "bg-slate-800", null);
+                mostrarModal("Franquia Esgotada", "Limite de serviços do ciclo atingido para este assinante.", "fa-ban text-rose-500", "Entendi", "bg-slate-800", null);
                 return;
             }
             await updateDoc(doc(getColRef('assinantes'), id), { cortesUsados: ass.cortesUsados + 1 });
@@ -927,7 +970,7 @@
         };
 
         window.confirmarRemoverAssinante = (id) => {
-            mostrarModal("Desligar Cliente", "Remover este assinante da base?", "fa-user-slash text-rose-500", "Remover", "bg-rose-600 hover:bg-rose-700", async () => {
+            mostrarModal("Excluir Cliente", "Remover definitivamente este assinante da base de dados?", "fa-user-slash text-rose-500", "Excluir", "bg-rose-600 hover:bg-rose-700", async () => {
                 await deleteDoc(doc(getColRef('assinantes'), id));
             });
         };
@@ -939,7 +982,7 @@
 
             window.mudarAba('financeiro');
             document.querySelector('input[value="receita"]').checked = true;
-            document.getElementById('desc-transacao').value = `Fatura Assinatura - ${ass.nome}`;
+            document.getElementById('desc-transacao').value = `Fatura Mensal - ${ass.nome}`;
             document.getElementById('valor-transacao').value = plano.valor;
             document.getElementById('valor-transacao').focus();
         };
@@ -950,7 +993,10 @@
             
             const ativos = assinantes.filter(a => a.status === 'ativo').length;
             document.getElementById('total-assinantes-badge').textContent = assinantes.length;
-            document.getElementById('valor-ativos').textContent = ativos;
+            
+            // O valor-ativos pode não existir na tela se for mobile e estiver na tela de caixa
+            const elAtivos = document.getElementById('valor-ativos');
+            if (elAtivos) elAtivos.textContent = ativos;
             
             tbody.innerHTML = '';
             
@@ -961,44 +1007,50 @@
             }
 
             assinantes.forEach(ass => {
-                const plano = planos.find(p => p.id === ass.planoId) || { nome: 'Plano Removido', ilimitado: true, limiteCortes: 0 };
+                const plano = planos.find(p => p.id === ass.planoId) || { nome: 'Plano Deletado', ilimitado: true, limiteCortes: 0 };
                 
                 let statusBadge = '';
                 if (ass.status === 'ativo') {
-                    statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-xs px-2 py-1 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-medium transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-500/20 w-20">Ativo</button>`;
+                    statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-[10px] sm:text-xs px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/30 font-semibold transition-colors hover:bg-emerald-100 w-full sm:w-20">Ativo</button>`;
                 } else if (ass.status === 'pendente') {
-                    statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-xs px-2 py-1 rounded bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200 dark:border-amber-800 font-medium transition-colors hover:bg-amber-100 dark:hover:bg-amber-500/20 w-20">Atrasado</button>`;
+                    statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-[10px] sm:text-xs px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200 dark:border-amber-800/30 font-semibold transition-colors hover:bg-amber-100 w-full sm:w-20">Pendente</button>`;
                 } else {
-                    statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-xs px-2 py-1 rounded bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200 dark:border-rose-800 font-medium transition-colors hover:bg-rose-100 dark:hover:bg-rose-500/20 w-20">Inativo</button>`;
+                    statusBadge = `<button onclick="alternarStatusAssinante('${ass.id}')" class="text-[10px] sm:text-xs px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200 dark:border-rose-800/30 font-semibold transition-colors hover:bg-rose-100 w-full sm:w-20">Inativo</button>`;
                 }
 
                 const limiteExcedido = !plano.ilimitado && ass.cortesUsados >= plano.limiteCortes;
                 const progressoCortes = plano.ilimitado 
-                    ? `<span class="text-xs font-medium text-corp-primary">${ass.cortesUsados} (Ilimitado)</span>`
-                    : `<span class="text-xs font-medium ${limiteExcedido ? 'text-rose-500' : 'text-slate-600 dark:text-slate-400'}">${ass.cortesUsados} / ${plano.limiteCortes} cortes</span>`;
+                    ? `<span class="text-xs font-bold text-corp-primary">${ass.cortesUsados} <i class="fa-solid fa-infinity ml-1 text-[10px] opacity-50"></i></span>`
+                    : `<span class="text-xs font-bold ${limiteExcedido ? 'text-rose-500' : 'text-slate-700 dark:text-slate-300'}">${ass.cortesUsados} / ${plano.limiteCortes}</span>`;
 
                 const rowClass = ass.status === 'inativo' ? 'opacity-60 bg-slate-50/50 dark:bg-slate-900/30' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50';
 
                 tbody.innerHTML += `
                     <tr class="${rowClass} transition-colors">
-                        <td class="py-3 px-4">
-                            <div class="font-medium text-slate-900 dark:text-slate-200">${ass.nome}</div>
-                            <div class="text-xs text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp opacity-70 mr-1"></i>${ass.telefone || 'Sem contato'}</div>
+                        <td class="py-3.5 px-4 max-w-[150px] sm:max-w-none">
+                            <div class="font-bold text-slate-900 dark:text-slate-200 truncate" title="${ass.nome}">${ass.nome}</div>
+                            <div class="text-[10px] sm:text-xs text-slate-500 mt-1 flex items-center"><i class="fa-brands fa-whatsapp opacity-70 mr-1.5"></i>${ass.telefone || 'Sem contato'}</div>
                         </td>
-                        <td class="py-3 px-4 text-slate-600 dark:text-slate-300 text-sm font-medium">${plano.nome}</td>
-                        <td class="py-3 px-4">
-                            <div class="flex flex-col space-y-1">
-                                ${progressoCortes}
-                                <button onclick="resetarCiclo('${ass.id}')" class="text-[10px] text-corp-primary hover:underline self-start">Renovar Ciclo</button>
+                        <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium whitespace-nowrap">${plano.nome}</td>
+                        <td class="py-3.5 px-4">
+                            <div class="flex flex-col space-y-1.5 items-start">
+                                <div class="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded">${progressoCortes}</div>
+                                <button onclick="resetarCiclo('${ass.id}')" class="text-[10px] text-corp-primary hover:underline font-medium"><i class="fa-solid fa-rotate-right mr-1"></i>Zerar</button>
                             </div>
                         </td>
-                        <td class="py-3 px-4 text-slate-600 dark:text-slate-300 text-sm">Dia ${ass.vencimento}</td>
-                        <td class="py-3 px-4">${statusBadge}</td>
-                        <td class="py-3 px-4">
-                            <div class="flex justify-center space-x-2">
-                                <button onclick="realizarCheckin('${ass.id}')" ${limiteExcedido || ass.status === 'inativo' ? 'disabled' : ''} class="w-8 h-8 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors disabled:opacity-30 flex items-center justify-center"><i class="fa-solid fa-check"></i></button>
-                                <button onclick="lancarMensalidade('${ass.id}')" class="w-8 h-8 rounded bg-corp-primary/10 hover:bg-corp-primary/20 text-corp-primary transition-colors flex items-center justify-center"><i class="fa-solid fa-file-invoice-dollar"></i></button>
-                                <button onclick="confirmarRemoverAssinante('${ass.id}')" class="w-8 h-8 rounded bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-500 transition-colors flex items-center justify-center"><i class="fa-solid fa-trash-can"></i></button>
+                        <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400 text-sm font-medium">Dia ${ass.vencimento}</td>
+                        <td class="py-3.5 px-4">${statusBadge}</td>
+                        <td class="py-3.5 px-4">
+                            <div class="flex justify-center space-x-1.5 sm:space-x-2">
+                                <button onclick="realizarCheckin('${ass.id}')" ${limiteExcedido || ass.status === 'inativo' ? 'disabled' : ''} class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-400 transition-colors disabled:opacity-30 disabled:grayscale flex items-center justify-center shadow-sm" title="Realizar Check-in de Corte">
+                                    <i class="fa-solid fa-scissors"></i>
+                                </button>
+                                <button onclick="lancarMensalidade('${ass.id}')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-corp-primary/10 hover:bg-corp-primary/20 text-corp-primary dark:text-white transition-colors flex items-center justify-center shadow-sm" title="Lançar Pagamento da Fatura">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                                </button>
+                                <button onclick="confirmarRemoverAssinante('${ass.id}')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-500 transition-colors flex items-center justify-center shadow-sm" title="Excluir Assinante">
+                                    <i class="fa-solid fa-trash-can text-sm"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>`;
@@ -1021,30 +1073,31 @@
             usuariosCadastrados.forEach(usr => {
                 const isMe = usr.id === currentUserDoc.id;
                 const statusBadge = usr.approved 
-                    ? `<span class="text-xs px-2 py-1 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">Aprovado</span>`
-                    : `<span class="text-xs px-2 py-1 rounded bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200 dark:border-amber-800">Pendente</span>`;
+                    ? `<span class="text-xs px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/30 font-semibold">Liberado</span>`
+                    : `<span class="text-xs px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200 dark:border-amber-800/30 font-semibold">Bloqueado</span>`;
                     
                 const roleBadge = usr.isAdmin
-                    ? `<span class="text-xs font-bold text-amber-600 dark:text-amber-500"><i class="fa-solid fa-crown mr-1"></i> Admin</span>`
-                    : `<span class="text-xs text-slate-500 dark:text-slate-400">Usuário</span>`;
+                    ? `<span class="text-xs font-bold text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded"><i class="fa-solid fa-crown mr-1"></i> Admin</span>`
+                    : `<span class="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">Básico</span>`;
 
                 const btnAprovar = usr.approved 
-                    ? `<button onclick="alterarStatusUsuario('${usr.id}', false)" ${isMe ? 'disabled' : ''} class="text-xs text-rose-500 hover:underline disabled:opacity-30">Bloquear</button>`
-                    : `<button onclick="alterarStatusUsuario('${usr.id}', true)" class="text-xs text-emerald-500 hover:underline">Aprovar</button>`;
+                    ? `<button onclick="alterarStatusUsuario('${usr.id}', false)" ${isMe ? 'disabled' : ''} class="w-8 h-8 rounded bg-rose-50 text-rose-500 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 disabled:opacity-30 flex items-center justify-center transition-colors" title="Bloquear Acesso"><i class="fa-solid fa-ban"></i></button>`
+                    : `<button onclick="alterarStatusUsuario('${usr.id}', true)" class="w-8 h-8 rounded bg-emerald-50 text-emerald-500 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 flex items-center justify-center transition-colors" title="Liberar Acesso"><i class="fa-solid fa-check"></i></button>`;
                 
                 const btnAdmin = usr.isAdmin
-                    ? `<button onclick="alterarNivelUsuario('${usr.id}', false)" ${isMe ? 'disabled' : ''} class="text-xs text-slate-500 hover:underline disabled:opacity-30">Remover Admin</button>`
-                    : `<button onclick="alterarNivelUsuario('${usr.id}', true)" class="text-xs text-amber-500 hover:underline">Tornar Admin</button>`;
+                    ? `<button onclick="alterarNivelUsuario('${usr.id}', false)" ${isMe ? 'disabled' : ''} class="w-8 h-8 rounded bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-30 flex items-center justify-center transition-colors" title="Remover privilégio de Admin"><i class="fa-solid fa-user"></i></button>`
+                    : `<button onclick="alterarNivelUsuario('${usr.id}', true)" class="w-8 h-8 rounded bg-amber-50 text-amber-500 hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 flex items-center justify-center transition-colors" title="Tornar Admin"><i class="fa-solid fa-crown"></i></button>`;
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                        <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-200">${usr.email} ${isMe ? '<span class="ml-2 text-[10px] text-slate-400">(Você)</span>' : ''}</td>
-                        <td class="py-3 px-4">${statusBadge}</td>
-                        <td class="py-3 px-4">${roleBadge}</td>
-                        <td class="py-3 px-4 text-center space-x-3">
-                            ${btnAprovar}
-                            <span class="text-slate-300 dark:text-slate-700">|</span>
-                            ${btnAdmin}
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td class="py-3.5 px-4 font-medium text-slate-900 dark:text-slate-200 whitespace-nowrap">${usr.email} ${isMe ? '<span class="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-corp-primary text-white">Você</span>' : ''}</td>
+                        <td class="py-3.5 px-4">${statusBadge}</td>
+                        <td class="py-3.5 px-4">${roleBadge}</td>
+                        <td class="py-3.5 px-4">
+                            <div class="flex justify-center space-x-2">
+                                ${btnAprovar}
+                                ${btnAdmin}
+                            </div>
                         </td>
                     </tr>`;
             });
@@ -1052,19 +1105,43 @@
 
         // --- UTILS & NAVEGAÇÃO ---
         window.mudarAba = (abaId) => {
+            // Oculta todos os containers
             ['financeiro', 'assinantes', 'planos', 'usuarios'].forEach(id => {
                 const elAba = document.getElementById(`aba-${id}`);
-                const elBtn = document.getElementById(`btn-${id}`);
                 if(elAba) elAba.classList.add('hidden');
-                if(elBtn) {
-                    elBtn.classList.remove('active', 'border-corp-primary', 'text-corp-primary');
-                    elBtn.classList.add('text-slate-500', 'border-transparent');
+            });
+
+            // Mostra o container alvo
+            document.getElementById(`aba-${abaId}`).classList.remove('hidden');
+
+            // Reseta estilo de todos os botões (desktop e mobile)
+            document.querySelectorAll('.aba-btn').forEach(btn => {
+                // Desktop styles
+                btn.classList.remove('active', 'border-corp-primary', 'text-corp-primary', 'dark:text-white', 'text-slate-900');
+                if(!btn.classList.contains('mobile-btn')) {
+                    btn.classList.add('text-slate-500', 'border-transparent');
+                }
+                
+                // Mobile styles
+                if(btn.classList.contains('mobile-btn')) {
+                    btn.classList.remove('text-corp-primary', 'dark:text-white');
+                    btn.classList.add('text-slate-400');
                 }
             });
-            document.getElementById(`aba-${abaId}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`btn-${abaId}`);
-            activeBtn.classList.remove('text-slate-500', 'border-transparent');
-            activeBtn.classList.add('active', 'text-corp-primary', 'border-corp-primary');
+
+            // Aplica estilo aos botões ativos correspondentes à aba
+            document.querySelectorAll(`.aba-btn[data-target="${abaId}"]`).forEach(btn => {
+                if(!btn.classList.contains('mobile-btn')) {
+                    btn.classList.remove('text-slate-500', 'border-transparent');
+                    btn.classList.add('active', 'border-corp-primary', 'text-corp-primary', 'dark:text-white');
+                } else {
+                    btn.classList.remove('text-slate-400');
+                    btn.classList.add('text-corp-primary', 'dark:text-white');
+                }
+            });
+            
+            // Scroll para o topo suave caso troque de aba no mobile
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.toggleTheme = () => {
@@ -1088,7 +1165,7 @@
             
             const btnConfirm = document.getElementById('modal-btn-confirm');
             btnConfirm.textContent = confirmBtnText;
-            btnConfirm.className = `flex-1 text-white px-4 py-2.5 rounded text-sm font-medium transition-colors shadow-sm ${confirmColor}`;
+            btnConfirm.className = `flex-1 text-white px-4 py-3 rounded-xl text-sm font-semibold transition-colors shadow-md ${confirmColor}`;
             
             modalConfirmAction = action;
             modal.classList.remove('hidden');
@@ -1108,8 +1185,10 @@
         document.getElementById('modal-btn-confirm').addEventListener('click', async () => {
             if (modalConfirmAction) {
                 const btn = document.getElementById('modal-btn-confirm');
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                const oldText = btn.textContent;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aguarde...';
                 await modalConfirmAction();
+                btn.textContent = oldText; // Em caso de reuso antes de fechar
             }
             window.fecharModal();
         });
